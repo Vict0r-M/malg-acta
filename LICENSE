@@ -659,3 +659,51 @@ specific requirements.
 if any, to sign a "copyright disclaimer" for the program, if necessary.
 For more information on this, and how to apply and follow the GNU AGPL, see
 <https://www.gnu.org/licenses/>.
+
+                        ADDITIONAL TERMS FOR MALG-ACTA
+
+These additional terms supplement the GNU Affero General Public License v3.0
+for the malg-acta (Automated Construction Testing and Analysis) project.
+
+Project Name: malg-acta
+Copyright (C) 2025  Malg Proiect SRL
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version, along with the following additional terms:
+
+                    AUTOMATIC CONTRIBUTOR LICENSE AGREEMENT
+
+By submitting any contribution, code, documentation, or other material to this 
+Project through any means including but not limited to pull requests, issue 
+submissions, code reviews, or patches ("Contribution"), you automatically 
+agree to the following terms:
+
+1. GRANT OF RIGHTS: You grant to Malg Proiect SRL a perpetual, worldwide, 
+   non-exclusive, no-charge, royalty-free, irrevocable copyright license to 
+   reproduce, prepare derivative works of, publicly display, publicly perform, 
+   sublicense, and distribute your Contributions and such derivative works.
+
+2. OWNERSHIP: You acknowledge that your Contributions are submitted under 
+   these terms, and that Malg Proiect SRL will own all right, title, and 
+   interest in and to your Contributions while maintaining the open source 
+   nature of the Project under the AGPL.
+
+3. PATENT LICENSE: You grant to Malg Proiect SRL and to recipients of 
+   software distributed by the Company a perpetual, worldwide, non-exclusive, 
+   no-charge, royalty-free, irrevocable patent license for any patent claims 
+   licensable by you that are necessarily infringed by your Contribution.
+
+4. REPRESENTATIONS: You represent that you are legally entitled to grant the 
+   above license and that each of your Contributions is your original creation 
+   or you have obtained all necessary rights to submit the Contributions under 
+   these terms.
+
+5. NO ADDITIONAL AGREEMENTS: No separate signed agreement is required beyond 
+   your action of submitting a Contribution to the Project, which constitutes 
+   your acceptance of these terms.
+
+These additional terms are valid as of March 30, 2025.
+
+Malg Proiect SRL

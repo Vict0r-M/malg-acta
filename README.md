@@ -1,2 +1,1 @@
-# malg-acta
-Malg Proiect SRL: Automated Construction Testing and Analysis
+# Malg Proiect SRL: Automated Construction Testing and Analysis
