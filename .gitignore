@@ -1,2 +1,12 @@
+# Encironment:
+.venv/
+.venvs/
+
+# VS Code:
+.vscode/
+
+# Python:
+__pycache__/
+
 # Other:
 idk.py
