@@ -1,0 +1,33 @@
+[
+    {
+        "probe_date": "06.03.2025",
+        "beneficiar": "ELBI SA",
+        "clasa_betonului": "C 16/20",
+        "numar_teste": 3,
+        "tests": [
+            {
+                "scale_data": "7649.0",
+                "compression_data": {
+                    "kN": "00701.0",
+                    "MPa": "0031.15"
+                }
+            },
+            {
+                "scale_data": "7550.0",
+                "compression_data": {
+                    "kN": "00681.6",
+                    "MPa": "0030.28"
+                }
+            },
+            {
+                "scale_data": "7608.5",
+                "compression_data": {
+                    "kN": "00716.1",
+                    "MPa": "0031.83"
+                }
+            }
+        ],
+        "internal_code": 25032013,
+        "try_date": "03.04.2025"
+    }
+]
