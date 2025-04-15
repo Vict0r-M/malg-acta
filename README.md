@@ -6,7 +6,7 @@
 
 - Use JSON files for persistent lists and maybe even non-persistent ones;
 - Pluggable input and output methods (e.g., GUI, CLI, file, etc);
-- Systematic file/folder and code naming and organization (e.g., Receipts PDF, Receipts Excel, Test Reports, Test Registry);
+- Systematic file/folder and code naming and organization (e.g., Receipts PDF, Receipts Excel, Test Reports, Registry);
 - Application exit functionality;
 - Visual indicators showing progress through testing workflow steps and user warnings. These are strictly related to user actions. Examples:
     - If the user starts the app with the `scale` unplugged or unplugs after app starts, the workflow will wait for the issue to get fixed until proceeding with any `scale`-related steps (and implictly with any steps subsequent to `scale`-related steps), but will run the others. The "Atenție: Cântarul nu este conectat!" message will be displayed;
@@ -249,8 +249,7 @@ flowchart TD
     BeamFlexuralFlow --> GenerateOutputs
     
     subgraph GenerateOutputs[Generate Outputs]
-        GO_Start[Process Test Results] --> GO_CalcAge[Calculate Sample Age]
-        GO_CalcAge --> GO_UpdateRegistry[Update Test Registry]
+        GO_Start[Process Test Results] --> GO_UpdateRegistry[Update Registry]
         GO_UpdateRegistry --> GO_FormatSelect{Check Selected Formats}
         GO_FormatSelect -->|PDF Selected| GO_PDF[Generate PDF]
         GO_FormatSelect -->|Excel Selected| GO_Excel[Generate Excel]
@@ -292,7 +291,7 @@ flowchart TD
         L_Process[Process]:::process
         L_Error[Warning/Error]:::error
         L_IO[User Interface Element]:::io
-        L_Storage[Persistent Data]:::storage
+        L_Storage[Persistent and Order Tracking Data]:::storage
         
         %% Force column layout
         L_Decision --- L_Process
@@ -306,4 +305,90 @@ flowchart TD
         linkStyle 88 stroke:none
         linkStyle 89 stroke:none
     end
+```
+
+## Language Distribution
+
+### Python Components:
+- Core state machine;
+- Plugin manager;
+- Device plugins (including serial communication);
+- High-level business logic;
+- Data store and persistence.
+
+### C++ Components:
+- Performance-critical calculations (if needed);
+- Data processing algorithms;
+- Future improvement: Serial communication library.
+
+### Java Components:
+- UI implementation;
+- Receipt generation.
+
+## Project Structure Template
+
+```
+malg-acta/
+├── main.py                         # Application entry point
+├── app_modules/
+│   ├── core/
+│   │   ├── state_machine.py        # Application flow control point
+│   │   ├── plugin_manager.py       # Manages loading and lifecycle of all plugins
+│   │   ├── data_storage.py         # Central data storage and access point
+│   │   ├── communication.py        # Inter-module communication bridge
+│   │   └── config_loader.py        # Configuration loader and manager
+│   ├── states/
+│   │   ├── base_state.py           # Abstract base class for all states
+│   │   ├── idle_state.py           # Idle (waiting) state implementation
+│   │   ├── testing_state.py        # Base class for testing-related states
+│   │   └── error_state.py          # Error and warning state implementation
+│   ├── interfaces/
+│   │   ├── ui_plugin.py            # Interface for UI
+│   │   ├── device_plugin.py        # Interface for device connections
+│   │   ├── protocol_plugin.py      # Interface for testing protocols
+│   │   └── output_plugin.py        # Interface for receipt generators
+│   ├── devices/
+│   │   ├── scale_plugin.py         # Scale communication implementation
+│   │   ├── press_plugin.py         # Press communication implementation
+│   │   ├── printer_plugin.py       # Printer communication implementation
+│   │   └── serial/                 # Serial communication utilities
+│   │       ├── serial_manager.py   # Manages serial port connections
+│   │       └── device_detector.py  # Detects connected devices
+│   ├── protocols/
+│   │   ├── base_protocol.py        # Abstract base class for all protocols
+│   │   ├── cube_compression.py     # Cube compression testing implementation
+│   │   ├── cube_frost.py           # Cube frost testing implementation
+│   │   ├── beam_compression.py     # Beam compression testing implementation
+│   │   └── beam_flexural.py        # Beam flexural testing implementation
+│   ├── models/
+│   │   ├── specimen.py             # Specimen data model
+│   │   ├── set.py                  # Set data model
+│   │   ├── batch.py                # Batch data model
+│   │   └── test_data.py            # Test results data model
+│   ├── data_persistence/
+│   ├── utils/
+│   │   ├── logging.py              # Logging setup and utilities
+│   │   ├── typing.py               # Custom typing
+│   │   ├── errors.py               # Custom error
+│   │   └── validation.py           # Input validation
+│   ├── calculations/               # Calculation-related functionality (C++)
+│   ├── data_processing/            # Data processing functionality (C++)
+│   ├── input/                      # Input methods (Java)
+│   ├── output/                     # Output methods (Java)
+│   └── bridges/
+│       ├── cpp_bridge.py           # Bridge to C++ components
+│       └── java_bridge.py          # Bridge to Java components
+├── config/
+│   ├── app_config.yaml             # Main application configuration
+│   └── protocols.yaml              # Protocol configurations
+├── data/
+│   ├── clients.json                # Client list
+│   ├── concrete_classes.json       # Concrete classes list (editable during runtime)
+│   ├── registry.json               # Registry storage
+│   └── temp/                       # Temporary data storage
+├── examples/                       # Example implementations
+├── .gitignore                      # Files and folders that shouldn't appear on GitHub
+├── requirements.txt                # Environment requirements
+├── LICENSE                         # Repository license
+└── README.md                       # Project documentation
 ```
