@@ -1,4 +1,4 @@
-# Encironment:
+# Environment:
 .venv/
 .venvs/
 
@@ -7,6 +7,10 @@
 
 # Python:
 __pycache__/
+
+# C++:
+
+# Java:
 
 # Other:
 idk.py
