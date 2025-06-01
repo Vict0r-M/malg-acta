@@ -41,11 +41,19 @@
                         <!-- Usage: mvn clean javafx:run -->
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>com.malg_acta.gui_app.App</mainClass>
+                            <mainClass>com.malg_acta.gui_app.Main</mainClass>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+      			<groupId>org.codehaus.mojo</groupId>
+      			<artifactId>exec-maven-plugin</artifactId>
+      			<version>3.5.1</version>
+      			<configuration>
+        			<mainClass>com.malg_acta.gui_app.Main</mainClass>
+      			</configuration>
+    		</plugin>
         </plugins>
     </build>
 </project>
