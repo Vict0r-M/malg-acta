@@ -291,7 +291,7 @@ public class InputGUI extends Application {
     private void DeleteClientButtonEventHandler(Button btn, ComboBox<String> clientCombo) {
     	btn.setOnAction(e -> {
     		String selectedClient = clientCombo.getValue().trim();
-            if (clients.contains(selectedClient)) {
+    		if (clients.contains(selectedClient)) {
             	clientHistory.push(new ArrayList<String>(clients));
                 clients.remove(selectedClient);
                 clientCombo.getItems().remove(selectedClient);
@@ -310,7 +310,7 @@ public class InputGUI extends Application {
                 clientCombo.getItems().setAll(clients);
                 saveClientsToJson(clientsFilePath, clients);
                 logInfo("Ultima modificare a fost anulată.");
-            } else {
+    		} else {
                 logError("Nu există modificări de anulat.");
             }
         });
@@ -319,14 +319,14 @@ public class InputGUI extends Application {
     private void AddConcreteButtonEventHandler(Button btn, ComboBox<String> concreteCombo) {
     	btn.setOnAction(e -> {
     		String newConcrete = concreteCombo.getEditor().getText().trim();
-            if (!newConcrete.isEmpty() && !concrete.contains(newConcrete)) {
+    		if (!newConcrete.isEmpty() && !concrete.contains(newConcrete)) {
             	concreteHistory.push(new ArrayList<String>(concrete));
             	concrete.add(newConcrete);
             	concreteCombo.getItems().add(newConcrete);
                 saveConcreteToJson(concreteFilePath, concrete);
                 logInfo("Clasă beton adăugată: " + newConcrete);
             }
-            else if (concrete.contains(newConcrete)) {
+    		else if (concrete.contains(newConcrete)) {
             	logError("Clasă beton deja existentă!");
             }
         });
@@ -335,13 +335,13 @@ public class InputGUI extends Application {
     private void DeleteConcreteButtonEventHandler(Button btn, ComboBox<String> concreteCombo) {
     	btn.setOnAction(e -> {
     		String selectedConcrete = concreteCombo.getValue().trim();
-            if (concrete.contains(selectedConcrete)) {
+    		if (concrete.contains(selectedConcrete)) {
             	concreteHistory.push(new ArrayList<String>(concrete));
             	concrete.remove(selectedConcrete);
             	concreteCombo.getItems().remove(selectedConcrete);
                 saveConcreteToJson(concreteFilePath, concrete);
                 logInfo("Clasă beton ștearsă: " + selectedConcrete);
-            } else {
+    		} else {
                 logError("Clasa beton nu există în listă.");
             }
         });
@@ -354,7 +354,7 @@ public class InputGUI extends Application {
                 concreteCombo.getItems().setAll(concrete);
                 saveConcreteToJson(concreteFilePath, concrete);
                 logInfo("Ultima modificare a fost anulată.");
-            } else {
+    		} else {
                 logError("Nu există modificări de anulat.");
             }
         });
@@ -365,15 +365,15 @@ public class InputGUI extends Application {
         ComboBoxListViewSkin<String> comboBoxListViewSkin = new ComboBoxListViewSkin<String>(comboBox);
         
         comboBoxListViewSkin.getPopupContent().addEventFilter(KeyEvent.ANY, (event) -> {
-        	if (event.getCode() == KeyCode.SPACE) {
-        		// allow spaces when filtering
-        		if (event.getEventType() == KeyEvent.KEY_PRESSED) {
-        			comboboxFilter += " ";
-        		}
-        		
-        		// this prevents the popup from closing
-                event.consume();
-            }
+			if (event.getCode() == KeyCode.SPACE) {
+				// allow spaces when filtering
+				if (event.getEventType() == KeyEvent.KEY_PRESSED) {
+					comboboxFilter += " ";
+				}
+				
+				// this prevents the popup from closing
+				event.consume();
+			}
         });
         
         comboBox.setSkin(comboBoxListViewSkin);
