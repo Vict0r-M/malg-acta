@@ -1,0 +1,10 @@
+{
+  "protocol" : "Rezistenta la Compresiune Cuburi",
+  "client" : "client 1",
+  "samplingDate" : "10.05.2024",
+  "concreteClass" : "class 1",
+  "setId" : "123",
+  "setSize" : "2",
+  "printOption" : "da",
+  "format" : "PDF"
+}

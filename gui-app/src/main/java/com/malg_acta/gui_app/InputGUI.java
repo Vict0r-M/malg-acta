@@ -41,15 +41,23 @@ import javafx.util.StringConverter;
 public class InputGUI extends Application {
 
     // TextFlow for logging messages with color support
-    private TextFlow logArea = new TextFlow();
+    //private TextFlow logArea = new TextFlow();
+	LoggerPanel logger = new LoggerPanel();
+    
+    // 'Obiectiv' and 'Element' fields
     private TextArea obiectivTextArea = new TextArea();
     private TextArea elementTextArea = new TextArea();
+    
+    // Handling the clients list
     private List<String> clients = new ArrayList<>();
-    private final String clientsFilePath = "clients.json";    
+    private final String clientsFilePath = "clients.json";   
     private final Stack<List<String>> clientHistory = new Stack<>();
+    
+    // Handling the concrete class list
     private List<String> concrete = new ArrayList<>();
     private final String concreteFilePath = "concrete_class.json";    
     private final Stack<List<String>> concreteHistory = new Stack<>();
+    
     private String comboboxFilter = "";
     
     @Override
@@ -64,9 +72,9 @@ public class InputGUI extends Application {
         formGrid.setAlignment(Pos.TOP_LEFT);
 
         ColumnConstraints col1 = new ColumnConstraints();
-        col1.setPercentWidth(40);
+        col1.setPercentWidth(50);
         ColumnConstraints col2 = new ColumnConstraints();
-        col2.setPercentWidth(60);
+        col2.setPercentWidth(50);
         formGrid.getColumnConstraints().addAll(col1, col2);
 
         GridPane leftGrid = new GridPane();
@@ -141,7 +149,7 @@ public class InputGUI extends Application {
         Label setIdLabel = new Label("Indicativ:");
         TextField setIdField = new TextField();
 
-        //set size
+        // set size
         Label setSizeLabel = new Label("Număr Epruvete:");
         TextField setSizeField = new TextField();
 
@@ -178,17 +186,15 @@ public class InputGUI extends Application {
 
         HBox outputFormatBox = new HBox(10, pdfCheck, excelCheck, wordCheck);
 
-        // log area
-        Label logLabel = new Label("Log:");
 
         // Wrap the log area with a ScrollPane to allow scrolling
-        ScrollPane logScrollPane = new ScrollPane();
-        logScrollPane.setContent(logArea); // Add the TextFlow to the ScrollPane
-        logScrollPane.setPrefHeight(150); // Set preferred height of the log area
-        logScrollPane.setFitToWidth(true); // Make the log content fit to width of the ScrollPane
+//        ScrollPane logScrollPane = new ScrollPane();
+//        logScrollPane.setContent(logger); // Add the TextFlow to the ScrollPane
+//        logScrollPane.setPrefHeight(150); // Set preferred height of the log area
+//        logScrollPane.setFitToWidth(true); // Make the log content fit to width of the ScrollPane
 
         // submit button to trigger validation
-        Button submitButton = new Button("Trimite Formular");
+        Button submitButton = new Button("Incepe testarea");
         
         // event handler for the submit button
         submitButton.setOnAction(event -> validateForm(
@@ -209,8 +215,7 @@ public class InputGUI extends Application {
             obiectivLabel, obiectivArea,
             elementLabel, elementArea,
             outputFormatLabel, outputFormatBox,
-            submitButton,
-            logLabel, logScrollPane // Use ScrollPane for log area
+            submitButton 
         	);
 
         // Define 4 column constraints for better alignment
@@ -257,16 +262,17 @@ public class InputGUI extends Application {
 
         formGrid.add(leftGrid, 0, 0);
         formGrid.add(rightGrid, 1, 0);
-
+        
         VBox fullLayout = new VBox(20);
         fullLayout.setPadding(new Insets(20));
-        fullLayout.getChildren().addAll(formGrid, new Label("Log:"), new ScrollPane(logArea));
+        fullLayout.getChildren().addAll(formGrid, new Label("Log:"), logger);
 
         ScrollPane mainScrollPane = new ScrollPane(fullLayout);
         mainScrollPane.setFitToWidth(true);
         Scene scene = new Scene(mainScrollPane, 1000, 800);
+        mainScrollPane.setStyle("-fx-font-size: 16px");
 
-        primaryStage.setTitle("Formular Testare Beton");
+        primaryStage.setTitle("Achiziție de date");
         primaryStage.setScene(scene);
         primaryStage.setMaximized(true);
         primaryStage.show();
@@ -280,10 +286,10 @@ public class InputGUI extends Application {
 				clients.add(newClient);
 				clientCombo.getItems().add(newClient);
 				saveClientsToJson(clientsFilePath, clients);
-				logInfo("Client adăugat: " + newClient);
+				logger.logInfo("Client adăugat: " + newClient);
             }
             else if (clients.contains(newClient)) {
-            	logError("Client deja existent!");
+            	logger.logError("Client deja existent!");
             }
         });
     }
@@ -296,9 +302,9 @@ public class InputGUI extends Application {
 				clients.remove(selectedClient);
 				clientCombo.getItems().remove(selectedClient);
 				saveClientsToJson(clientsFilePath, clients);
-				logInfo("Client șters: " + selectedClient);
+				logger.logInfo("Client șters: " + selectedClient);
             } else {
-                logError("Clientul nu există în listă.");
+                logger.logError("Clientul nu există în listă.");
             }
         });
     }
@@ -309,9 +315,9 @@ public class InputGUI extends Application {
 				clients = clientHistory.pop();
 				clientCombo.getItems().setAll(clients);
 				saveClientsToJson(clientsFilePath, clients);
-				logInfo("Ultima modificare a fost anulată.");
+				logger.logInfo("Ultima modificare a fost anulată.");
     		} else {
-                logError("Nu există modificări de anulat.");
+                logger.logError("Nu există modificări de anulat.");
             }
         });
     }
@@ -324,10 +330,10 @@ public class InputGUI extends Application {
 				concrete.add(newConcrete);
 				concreteCombo.getItems().add(newConcrete);
 				saveConcreteToJson(concreteFilePath, concrete);
-				logInfo("Clasă beton adăugată: " + newConcrete);
+				logger.logInfo("Clasă beton adăugată: " + newConcrete);
             }
     		else if (concrete.contains(newConcrete)) {
-            	logError("Clasă beton deja existentă!");
+            	logger.logError("Clasă beton deja existentă!");
             }
         });
     }
@@ -340,9 +346,9 @@ public class InputGUI extends Application {
 				concrete.remove(selectedConcrete);
 				concreteCombo.getItems().remove(selectedConcrete);
 				saveConcreteToJson(concreteFilePath, concrete);
-				logInfo("Clasă beton ștearsă: " + selectedConcrete);
+				logger.logInfo("Clasă beton ștearsă: " + selectedConcrete);
     		} else {
-                logError("Clasa beton nu există în listă.");
+                logger.logError("Clasa beton nu există în listă.");
             }
         });
     }
@@ -353,9 +359,9 @@ public class InputGUI extends Application {
 				concrete = concreteHistory.pop();
 				concreteCombo.getItems().setAll(concrete);
 				saveConcreteToJson(concreteFilePath, concrete);
-				logInfo("Ultima modificare a fost anulată.");
+				logger.logInfo("Ultima modificare a fost anulată.");
     		} else {
-                logError("Nu există modificări de anulat.");
+                logger.logError("Nu există modificări de anulat.");
             }
         });
     }
@@ -493,31 +499,31 @@ public class InputGUI extends Application {
 
         // Protocol must be selected
         if (protocolGroup.getSelectedToggle() == null) {
-            logError("Trebuie selectat un protocol.");
+            logger.logError("Trebuie selectat un protocol.");
             valid = false;
         }
 
         // Client must be selected or typed
         if (clientCombo.getEditor().getText().trim().isEmpty()) {
-            logError("Trebuie selectat sau introdus un beneficiar.");
+            logger.logError("Trebuie selectat sau introdus un beneficiar.");
             valid = false;
         }
 
         // Sampling date must respect DD.MM.YYYY
         if (samplingDatePicker.getValue() == null) {
-            logError("Trebuie selectată o dată validă pentru prelevare.");
+            logger.logError("Trebuie selectată o dată validă pentru prelevare.");
             valid = false;
         }
 
         // Concrete class must be selected or typed
         if (concreteClassCombo.getEditor().getText().trim().isEmpty()) {
-            logError("Trebuie selectată sau introdusă o clasă de beton.");
+            logger.logError("Trebuie selectată sau introdusă o clasă de beton.");
             valid = false;
         }
 
         // Set ID must be typed
         if (setIdField.getText().trim().isEmpty()) {
-            logError("Indicativul trebuie completat.");
+            logger.logError("Indicativul trebuie completat.");
             valid = false;
         }
 
@@ -525,45 +531,45 @@ public class InputGUI extends Application {
         try {
             int size = Integer.parseInt(setSizeField.getText().trim());
             if (size <= 0) {
-                logError("Numărul de epruvete trebuie să fie un număr mai mare decât 0.");
+                logger.logError("Numărul de epruvete trebuie să fie un număr mai mare decât 0.");
                 valid = false;
             }
         } catch (NumberFormatException e) {
-            logError("Numărul de epruvete trebuie să fie un număr valid.");
+            logger.logError("Numărul de epruvete trebuie să fie un număr valid.");
             valid = false;
         }
 
         // Should print must be selected
         if (printGroup.getSelectedToggle() == null) {
-            logError("Trebuie selectată opțiunea de imprimare bon.");
+            logger.logError("Trebuie selectată opțiunea de imprimare bon.");
             valid = false;
         }
 
         // At least one output format must be selected
         if (!pdfCheck.isSelected() && !excelCheck.isSelected() && !wordCheck.isSelected()) {
-            logError("Trebuie selectat cel puțin un format de bon.");
+            logger.logError("Trebuie selectat cel puțin un format de bon.");
             valid = false;
         }
 
         if (valid) {
-            logInfo("Formular validat cu succes!");
-            FormData data = new FormData();
+            logger.logInfo("Date validate!");
+            FormDataGUI data = new FormDataGUI();
             
-            // data.protocol = ((RadioButton) protocolGroup.getSelectedToggle()).getText();
+            data.protocol = ((RadioButton) protocolGroup.getSelectedToggle()).getText();
             data.beneficiar = clientCombo.getEditor().getText();
             data.probe_date = samplingDatePicker.getValue().format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
             data.clasa_betonului = concreteClassCombo.getEditor().getText();
             data.internal_code = setIdField.getText();
             data.numar_teste = Integer.parseInt(setSizeField.getText());
             data.try_date = LocalDate.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
-            // data.obiectiv = obiectivTextArea.getText();
-            // data.element = elementTextArea.getText();
+            data.obiectiv = obiectivTextArea.getText();
+            data.element = elementTextArea.getText();
             try {
                 ObjectMapper mapper = new ObjectMapper();
                 mapper.writerWithDefaultPrettyPrinter().writeValue(new File("output.json"), data);
-                logInfo("Datele au fost salvate în fișierul output.json");
+                logger.logInfo("Datele au fost salvate în fișierul output.json");
             } catch (IOException e) {
-                logError("Eroare la salvarea în fișier JSON.");
+                logger.logError("Eroare la salvarea în fișier JSON.");
                 System.out.println(e.getMessage());
             }
         }
@@ -580,24 +586,24 @@ public class InputGUI extends Application {
         }
     }
 
-    private void logInfo(String message) {
-        Text infoText = new Text("[INFO] " + message + "\n");
-        infoText.setFill(Color.GREEN); // Set color to green for info
-        logArea.getChildren().add(infoText);
-    }
-
-    private void logError(String message) {
-        Text errorText = new Text("[ERROR] " + message + "\n");
-        errorText.setFill(Color.RED); // Set color to red for errors
-        logArea.getChildren().add(errorText);
-    }
+//    private void logger.logInfo(String message) {
+//        Text infoText = new Text("[INFO] " + message + "\n");
+//        infoText.setFill(Color.GREEN); // Set color to green for info
+//        logArea.getChildren().add(infoText);
+//    }
+//
+//    private void logger.logError(String message) {
+//        Text errorText = new Text("[ERROR] " + message + "\n");
+//        errorText.setFill(Color.RED); // Set color to red for errors
+//        logArea.getChildren().add(errorText);
+//    }
     
     private List<String> loadClientsFromJson(String filePath) {
         ObjectMapper mapper = new ObjectMapper();
         try {
             return mapper.readValue(new File(filePath), mapper.getTypeFactory().constructCollectionType(List.class, String.class));
         } catch (IOException e) {
-            logError("Eroare la citirea clientilor");
+            logger.logError("Eroare la citirea clientilor");
             return new ArrayList<>();
         }
     }
@@ -606,9 +612,9 @@ public class InputGUI extends Application {
         ObjectMapper mapper = new ObjectMapper();
         try {
             mapper.writerWithDefaultPrettyPrinter().writeValue(new File(filePath), clients);
-            logInfo("Lista clienților a fost salvată.");
+            logger.logInfo("Lista clienților a fost salvată.");
         } catch (IOException e) {
-            logError("Eroare la salvarea listei de clienți: " + e.getMessage());
+            logger.logError("Eroare la salvarea listei de clienți: " + e.getMessage());
         }
     }
  
@@ -617,7 +623,7 @@ public class InputGUI extends Application {
         try {
             return mapper.readValue(new File(filePath), mapper.getTypeFactory().constructCollectionType(List.class, String.class));
         } catch (IOException e) {
-            logError("Eroare la citirea clasei betonului");
+            logger.logError("Eroare la citirea clasei betonului");
             return new ArrayList<>();
         }
     }
@@ -626,9 +632,9 @@ public class InputGUI extends Application {
         ObjectMapper mapper = new ObjectMapper();
         try {
             mapper.writerWithDefaultPrettyPrinter().writeValue(new File(filePath), concrete);
-            logInfo("Lista clasa beton a fost salvată.");
+            logger.logInfo("Lista clasa beton a fost salvată.");
         } catch (IOException e) {
-            logError("Eroare la salvarea listei de clasa beton: " + e.getMessage());
+            logger.logError("Eroare la salvarea listei de clasă beton: " + e.getMessage());
         }
     }
     
