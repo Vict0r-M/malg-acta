@@ -276,11 +276,11 @@ public class InputGUI extends Application {
     	btn.setOnAction(e -> {
             String newClient = clientCombo.getEditor().getText().trim();
             if (!newClient.isEmpty() && !clients.contains(newClient)) {
-            	clientHistory.push(new ArrayList<String>(clients));
-                clients.add(newClient);
-                clientCombo.getItems().add(newClient);
-                saveClientsToJson(clientsFilePath, clients);
-                logInfo("Client adăugat: " + newClient);
+				clientHistory.push(new ArrayList<String>(clients));
+				clients.add(newClient);
+				clientCombo.getItems().add(newClient);
+				saveClientsToJson(clientsFilePath, clients);
+				logInfo("Client adăugat: " + newClient);
             }
             else if (clients.contains(newClient)) {
             	logError("Client deja existent!");
@@ -292,11 +292,11 @@ public class InputGUI extends Application {
     	btn.setOnAction(e -> {
     		String selectedClient = clientCombo.getValue().trim();
     		if (clients.contains(selectedClient)) {
-            	clientHistory.push(new ArrayList<String>(clients));
-                clients.remove(selectedClient);
-                clientCombo.getItems().remove(selectedClient);
-                saveClientsToJson(clientsFilePath, clients);
-                logInfo("Client șters: " + selectedClient);
+				clientHistory.push(new ArrayList<String>(clients));
+				clients.remove(selectedClient);
+				clientCombo.getItems().remove(selectedClient);
+				saveClientsToJson(clientsFilePath, clients);
+				logInfo("Client șters: " + selectedClient);
             } else {
                 logError("Clientul nu există în listă.");
             }
@@ -306,10 +306,10 @@ public class InputGUI extends Application {
     private void UndoClientButtonEventHandler(Button btn, ComboBox<String> clientCombo) {
     	btn.setOnAction(e -> {
     		if (!clientHistory.isEmpty()) {
-                clients = clientHistory.pop();
-                clientCombo.getItems().setAll(clients);
-                saveClientsToJson(clientsFilePath, clients);
-                logInfo("Ultima modificare a fost anulată.");
+				clients = clientHistory.pop();
+				clientCombo.getItems().setAll(clients);
+				saveClientsToJson(clientsFilePath, clients);
+				logInfo("Ultima modificare a fost anulată.");
     		} else {
                 logError("Nu există modificări de anulat.");
             }
@@ -320,11 +320,11 @@ public class InputGUI extends Application {
     	btn.setOnAction(e -> {
     		String newConcrete = concreteCombo.getEditor().getText().trim();
     		if (!newConcrete.isEmpty() && !concrete.contains(newConcrete)) {
-            	concreteHistory.push(new ArrayList<String>(concrete));
-            	concrete.add(newConcrete);
-            	concreteCombo.getItems().add(newConcrete);
-                saveConcreteToJson(concreteFilePath, concrete);
-                logInfo("Clasă beton adăugată: " + newConcrete);
+				concreteHistory.push(new ArrayList<String>(concrete));
+				concrete.add(newConcrete);
+				concreteCombo.getItems().add(newConcrete);
+				saveConcreteToJson(concreteFilePath, concrete);
+				logInfo("Clasă beton adăugată: " + newConcrete);
             }
     		else if (concrete.contains(newConcrete)) {
             	logError("Clasă beton deja existentă!");
@@ -336,11 +336,11 @@ public class InputGUI extends Application {
     	btn.setOnAction(e -> {
     		String selectedConcrete = concreteCombo.getValue().trim();
     		if (concrete.contains(selectedConcrete)) {
-            	concreteHistory.push(new ArrayList<String>(concrete));
-            	concrete.remove(selectedConcrete);
-            	concreteCombo.getItems().remove(selectedConcrete);
-                saveConcreteToJson(concreteFilePath, concrete);
-                logInfo("Clasă beton ștearsă: " + selectedConcrete);
+				concreteHistory.push(new ArrayList<String>(concrete));
+				concrete.remove(selectedConcrete);
+				concreteCombo.getItems().remove(selectedConcrete);
+				saveConcreteToJson(concreteFilePath, concrete);
+				logInfo("Clasă beton ștearsă: " + selectedConcrete);
     		} else {
                 logError("Clasa beton nu există în listă.");
             }
@@ -350,10 +350,10 @@ public class InputGUI extends Application {
     private void UndoConcreteButtonEventHandler(Button btn, ComboBox<String> concreteCombo) {
     	btn.setOnAction(e -> {
     		if (!concreteHistory.isEmpty()) {
-                concrete = concreteHistory.pop();
-                concreteCombo.getItems().setAll(concrete);
-                saveConcreteToJson(concreteFilePath, concrete);
-                logInfo("Ultima modificare a fost anulată.");
+				concrete = concreteHistory.pop();
+				concreteCombo.getItems().setAll(concrete);
+				saveConcreteToJson(concreteFilePath, concrete);
+				logInfo("Ultima modificare a fost anulată.");
     		} else {
                 logError("Nu există modificări de anulat.");
             }
