@@ -1,0 +1,98 @@
+{
+  "cube_compression_testing": {
+    "specimens": [
+      {
+        "scale_data": {
+          "mass": 7.850,
+          "mass_unit": "kg",
+          "mass_decimals": 3
+        },
+        "press_data": {
+          "load": 762300.0,
+          "strength": 33.87,
+          "load_unit": "N",
+          "strength_unit": "N/mm²",
+          "load_decimals": 0,
+          "strength_decimals": 2
+        }
+      },
+      {
+        "scale_data": {
+          "mass": 7.663,
+          "mass_unit": "kg", 
+          "mass_decimals": 3
+        },
+        "press_data": {
+          "load": 766600.0,
+          "strength": 34.07,
+          "load_unit": "N",
+          "strength_unit": "N/mm²",
+          "load_decimals": 0,
+          "strength_decimals": 2
+        }
+      },
+      {
+        "scale_data": {
+          "mass": 7.807,
+          "mass_unit": "kg",
+          "mass_decimals": 3  
+        },
+        "press_data": {
+          "load": 765100.0,
+          "strength": 33.98,
+          "load_unit": "N", 
+          "strength_unit": "N/mm²",
+          "load_decimals": 0,
+          "strength_decimals": 2
+        }
+      }
+    ]
+  },
+  "cube_frost_testing": {
+    "specimens": [
+      {
+        "scale_data": {
+          "mass": 7.920,
+          "mass_unit": "kg",
+          "mass_decimals": 3
+        },
+        "press_data": {
+          "load": 745200.0,
+          "strength": 33.12,
+          "load_unit": "N",
+          "strength_unit": "N/mm²",
+          "load_decimals": 0,
+          "strength_decimals": 2
+        }
+      }
+    ]
+  },
+  "beam_compression_testing": {
+    "specimens": [
+      {
+        "press_data": {
+          "load": 458300.0,
+          "strength": 20.37,
+          "load_unit": "N",
+          "strength_unit": "N/mm²",
+          "load_decimals": 0,
+          "strength_decimals": 2
+        }
+      }
+    ]
+  },
+  "beam_flexural_testing": {
+    "specimens": [
+      {
+        "press_data": {
+          "load": 125600.0,
+          "strength": 5.58,
+          "load_unit": "N",
+          "strength_unit": "N/mm²",
+          "load_decimals": 0,
+          "strength_decimals": 2
+        }
+      }
+    ]
+  }
+}
