@@ -2,6 +2,7 @@
 
 #%% Dependencies:
 
+from typing import ClassVar
 from pydantic import BaseModel, Field, field_validator
 
 #%% Main Class:
@@ -9,8 +10,8 @@ from pydantic import BaseModel, Field, field_validator
 class ScaleData(BaseModel):
     """Data model for scale measurements from specimen weighing"""
 
-    # Allowed units
-    ALLOWED_MASS_UNITS = {"kg", "g", "mg", "t", "lb", "oz"}
+    # Allowed units:
+    ALLOWED_MASS_UNITS: ClassVar[set] = {"kg", "g", "mg", "t", "lb", "oz"}
 
     # Measurement field:
     mass: float = Field(..., description="Mass of the specimen (assumed in kilograms unless specified otherwise)", ge=0.0)

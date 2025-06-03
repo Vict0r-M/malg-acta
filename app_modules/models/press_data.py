@@ -2,6 +2,7 @@
 
 #%% Dependencies:
 
+from typing import ClassVar
 from pydantic import BaseModel, Field, field_validator
 
 #%% Main Class:
@@ -9,9 +10,9 @@ from pydantic import BaseModel, Field, field_validator
 class PressData(BaseModel):
     """Data model for press measurements"""
 
-    # Allowed units:
-    ALLOWED_LOAD_UNITS = {"N", "kN", "MN"}
-    ALLOWED_STRENGTH_UNITS = {"N/mm²", "MPa", "Pa", "kPa", "GPa"}
+    # Allowed units - annotated as ClassVar
+    ALLOWED_LOAD_UNITS: ClassVar[set] = {"N", "kN", "MN"}
+    ALLOWED_STRENGTH_UNITS: ClassVar[set] = {"N/mm²", "MPa", "Pa", "kPa", "GPa"}
 
     # Measurement fields:
     load: float = Field(..., description="Maximum force reached (assumed in Newtons unless specified otherwise)", ge=0.0)

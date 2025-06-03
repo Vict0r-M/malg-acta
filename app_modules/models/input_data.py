@@ -33,9 +33,10 @@ class InputData(BaseModel):
     testing_date: str = Field(default_factory=lambda: datetime.now().strftime("%d.%m.%Y"), 
                               description="Testing date in DD.MM.YYYY format")  # defaults to current date
 
-    sampling_location: str = Field(..., description="Location where sampling occurred", 
+    sampling_location: str = Field(default="sampling location", description="Location where sampling occurred", 
                                    min_length=1, max_length=200)
-    project_name: str = Field(..., description="Project name/identifier", min_length=1, max_length=200)
+    project_name: str = Field(default="project name", description="Project name/identifier", 
+                              min_length=1, max_length=200)
 
     set_id: str = Field(..., description="Set identifier/indicative", min_length=1, max_length=100)
     set_size: int = Field(..., description="Number of specimens in the set", gt=0, le=100)

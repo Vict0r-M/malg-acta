@@ -48,11 +48,21 @@ class JavaBridge:
                 self.logger.error(f"GUI JAR file not found: {gui_jar}")
                 return False
             
+            # First, ensure any old output.json is deleted
+            output_file = Path("output.json")
+            if output_file.exists():
+                output_file.unlink()
+                self.logger.info("Deleted existing output.json file")
+            
             self.logger.info("Launching Java GUI...")
             
-            # Launch GUI in separate process:
+            # Launch GUI with proper JavaFX parameters
             process = subprocess.Popen([
-                "java", "-cp", str(gui_jar), 
+                "java", 
+                "--module-path", "javafx\\lib",
+                "--add-modules", "javafx.controls,javafx.fxml,javafx.base",
+                "-Djava.awt.headless=false",
+                "-cp", f"lib\\*;{str(gui_jar)}", 
                 self.config.java_integration.gui_class
             ], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             
@@ -167,17 +177,23 @@ class JavaBridge:
         try:
             converted = {
                 "protocol": protocol_mapping.get(java_data.get("protocol", ""), "cube_compression_testing"),
-                "client": java_data.get("beneficiar", ""),
-                "concrete_class": java_data.get("clasa_betonului", ""),
-                "sampling_date": java_data.get("probe_date", ""),
-                "testing_date": java_data.get("try_date", ""),
-                "sampling_location": java_data.get("obiectiv", "Demo Location"),
-                "project_name": java_data.get("element", "Demo Project"),
-                "set_id": java_data.get("internal_code", ""),
-                "set_size": java_data.get("numar_teste", 3),
+                "client": java_data.get("client", java_data.get("beneficiar", "")),
+                "concrete_class": java_data.get("concrete_class", java_data.get("concrete class", java_data.get("clasa_betonului", java_data.get("clasa", "")))),
+                "sampling_date": java_data.get("sampling_date", java_data.get("probe_date", "")),
+                "testing_date": java_data.get("testing_date", java_data.get("try_date", "")),
+                "sampling_location": java_data.get("sampling_location", "sampling location"),  # Use default if empty
+                "project_name": java_data.get("project_name", "project name"),  # Use default if empty
+                "set_id": java_data.get("set_id", java_data.get("internal_code", "")),
+                "set_size": java_data.get("set_size", java_data.get("numar_teste", 3)),
                 "should_print": java_data.get("should_print", True),
                 "output_format": ["PDF", "Excel"]  # Default formats
             }
+            
+            # Ensure sampling_location and project_name are not empty strings
+            if not converted["sampling_location"].strip():
+                converted["sampling_location"] = "sampling location"
+            if not converted["project_name"].strip():
+                converted["project_name"] = "project name"
             
             self.logger.info("Successfully converted Java input to InputData format")
             return converted
@@ -202,31 +218,49 @@ class JavaBridge:
             csv_data = self._create_csv_data(output_data)
             csv_file = Path("data/temp_excel_data.csv")
             
+            # Ensure data directory exists:
+            csv_file.parent.mkdir(parents=True, exist_ok=True)
+            
             with open(csv_file, 'w', encoding='utf-8') as f:
                 f.write(csv_data)
             
-            # Compile and run Java Excel generator:
+            # Navigate to scripts directory and compile Java file:
             java_file = Path("scripts/CubeCompression.java")
             
             if java_file.exists():
-                # Compile Java file:
+                # Use Windows-compatible classpath syntax with absolute paths:
+                lib_path = Path("lib").resolve()
+                classpath = f"{lib_path}\\*"
+                
+                self.logger.info(f"Compiling Java with classpath: {classpath}")
+                
+                # Compile Java file with correct Windows classpath:
                 compile_result = subprocess.run([
-                    "javac", "-cp", ".:lib/*", str(java_file)
-                ], capture_output=True, text=True)
+                    "javac", "-cp", classpath, str(java_file.resolve())
+                ], capture_output=True, text=True, cwd=Path.cwd())
                 
                 if compile_result.returncode == 0:
-                    # Run Java program:
+                    self.logger.info("Java compilation successful")
+                    
+                    # Run Java program with same classpath:
+                    scripts_dir = Path("scripts").resolve()
+                    run_classpath = f"{classpath};{scripts_dir}"
+                    
                     run_result = subprocess.run([
-                        "java", "-cp", ".:lib/*", "CubeCompression"
-                    ], capture_output=True, text=True)
+                        "java", "-cp", run_classpath, "CubeCompression"
+                    ], capture_output=True, text=True, cwd=scripts_dir)
                     
                     if run_result.returncode == 0:
                         self.logger.info("Excel file generated successfully")
                         return True
                     else:
                         self.logger.error(f"Java execution failed: {run_result.stderr}")
+                        self.logger.error(f"Java stdout: {run_result.stdout}")
                 else:
                     self.logger.error(f"Java compilation failed: {compile_result.stderr}")
+                    self.logger.error(f"Compilation stdout: {compile_result.stdout}")
+            else:
+                self.logger.error(f"Java file not found: {java_file}")
             
             return False
             
@@ -251,6 +285,7 @@ class JavaBridge:
             
             # Write temporary JSON file:
             temp_json = Path("data/temp_pdf_data.json")
+            temp_json.parent.mkdir(parents=True, exist_ok=True)
             with open(temp_json, 'w', encoding='utf-8') as f:
                 json.dump(pdf_data, f, indent=2, ensure_ascii=False)
             
@@ -267,6 +302,8 @@ class JavaBridge:
                     return True
                 else:
                     self.logger.error(f"PDF generation failed: {result.stderr}")
+            else:
+                self.logger.error(f"PDF script not found: {pdf_script}")
             
             return False
             
