@@ -1,0 +1,69 @@
+# Application Configuration for Malg-ACTA
+
+# Logging configuration
+logging:
+  path: "logs/malg_acta.log"
+  console_enabled: true
+
+# File paths
+data_paths:
+  demo_data: "data/demo_data.json"
+  clients_file: "data/clients.json"
+  concrete_classes_file: "data/concrete_classes.json"
+  registry_file: "data/registry.json"
+  input_exchange: "data/input_from_java.json"
+  output_exchange: "data/output_to_java.json"
+
+# Output paths
+output_paths:
+  reports_dir: "data/reports"
+  excel_dir: "data/reports/excel"
+  pdf_dir: "data/reports/pdf"
+
+# Protocol settings
+protocols:
+  cube_compression_testing:
+    requires_scale: true
+    requires_press: true
+    specimen_dimensions:
+      x: 150  # mm
+      y: 150  # mm  
+      z: 150  # mm
+    compression_area: 22500  # mm²
+  
+  cube_frost_testing:
+    requires_scale: true
+    requires_press: true
+    specimen_dimensions:
+      x: 150  # mm
+      y: 150  # mm
+      z: 150  # mm
+    compression_area: 22500  # mm²
+  
+  beam_compression_testing:
+    requires_scale: false
+    requires_press: true
+    specimen_dimensions:
+      length: 400  # mm
+      width: 100   # mm
+      height: 100  # mm
+  
+  beam_flexural_testing:
+    requires_scale: false
+    requires_press: true
+    specimen_dimensions:
+      length: 400  # mm
+      width: 100   # mm
+      height: 100  # mm
+
+# Java integration
+java_integration:
+  gui_jar_path: "gui-app/target/gui-app-1.0.jar"
+  cli_class: "com.malg_acta.gui_app.InputCLI"
+  gui_class: "com.malg_acta.gui_app.InputGUI"
+  excel_class: "CubeCompression"
+  
+# Output generation
+output_generation:
+  pdf_script: "scripts/create_pdf.py"
+  excel_script: "scripts/CubeCompression.java"

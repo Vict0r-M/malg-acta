@@ -4,9 +4,9 @@
 
 ### General
 
-- Use JSON files for persistent lists and maybe even non-persistent ones;
+- Use JSON files for persistent lists;
+- Use `Pydantic` for data structures;
 - Pluggable input and output methods (e.g., GUI, CLI, file, etc);
-- Systematic file/folder and code naming and organization (e.g., Receipts PDF, Receipts Excel, Test Reports, Test Registry);
 - Application exit functionality;
 - Visual indicators showing progress through testing workflow steps and user warnings. These are strictly related to user actions. Examples:
     - If the user starts the app with the `scale` unplugged or unplugs after app starts, the workflow will wait for the issue to get fixed until proceeding with any `scale`-related steps (and implictly with any steps subsequent to `scale`-related steps), but will run the others. The "Atenție: Cântarul nu este conectat!" message will be displayed;
@@ -85,7 +85,7 @@
     - Excel;
     - Word;
 
-### Device Input
+### Device I/O
 
 - Connect to and read data from `scale` (serial port);
 - Connect to and read data from `press` (serial port);
@@ -125,11 +125,12 @@
     - PDF output with standardized format;
     - Excel output with standardized format and embedded formulas for recalculation;
     - Word output with standardized format and with embedded formulas for recalculation;
-- Model available at `examples/output`.
+- Optional receipt printing;
+- Entry added to register.
 
 ## Control Flow Diagram
 
-Decision tree available both [here](https://mermaid.live/view?fbclid=IwZXh0bgNhZW0CMTEAAR7mEuMYccp8hioQikzrIGXwfMDqczq9udkhe57xQd0POunKrUT0guI9zIzbyw_aem_RvWth-26Zj6dSdO5l3HD4Q#pako:eNqdWo1P47gS_1esnHi8k8weTT8ole5WLGz3Ie0eaMvu6r2AViZx24g06SXpLlzhf39jj53YTlLgQGrj8W9m7PmyY3frhVnEvYm3t7eN07ickO1-ueQrvj8h-xHL7_YpQcJXlsfsNuEF9GzJ_jqPVyx_OM2SLBfYX4ZsGPKRgKuuK35f1t3z-dzoe5flEc_bmJM45TWdHYp_QS94mKWRpXHkszFncoA8L2Orr38s_vefnp729q7TeZL9DJcsL8nV2XVK4G9vj3xicUrYep3EISvjLCUCRX7G5ZLkPNqEPCI_hNyQJaRYszBOF8g7K0FSID9BSLI4ODm9Orkhv__-B_mYseiS50VclDwtz1jJAkEiNY18hO_iBiU14VLKWVysE_bw4ct5oB4JPCueupMcHPxBvhQ8P0_BACwUkwhEmxgExVXNWqiHUadsAT5NS6Q7QqRgxMjRbvEZh_72CXmMfoF__C8vHiVixhMuxWylrqqp-CyI5DxNYhgJcH9ZR6zkqilwAVKIIknem04xWRrmXKJZUfBanqIrsiXXYTEVNAbTZm4L2tTTzVL544oXJUQW-ZbldyIA2437Z_aokRq4xQBUVO0VB1Qxtw6iDSzdeJ6uN-Uly9kK5pMXgWxXQ607lKkcuJz1V5bEwiqyb6tbCFVjtSBS-Xn6Q9AeyWyZ_ZTk93me5YFoIiuRBKXXRkm1zlC6FH1FNR-z8E5aZc5CHogWgbSaxjyJ6hQ1IFLFZZ6VWZglGH1b3WwEeuXiM_4jBt7TJQf5t6yAwgIhq_kQZguVepBNcm2R9zP_axNDbVJdhVJkAOXkVC_5MyuBhUUPjwryjeUpOBDNqUalaDemKEXrjt4ujUqbnsy7nKXhsrbQ1cOau8Y53dzyKrL-fZqt1jkvCtD02zTPivJXYtsHRWK-C84Gw6OUqAROq4TCz2Jzu8jZeulignZZelzKOOJPAM9hnQzERwxR9Hc1-hsVgJp-IZa4K7DbnbC5gZcdRPcYwjt40Q-yxoAZFmKIuoD9Sy8HZAbLlGhfim6icYZwWwCWeM6KTS7XgdNlBh7cytUDY7Awu59qOfUTeA-1GkAoDuWyhjQ0SM8hF6rhIttFG8pnKttb7K7abw3lNrKqbpJsRTfKsIO7EmDFt2WWnZpkabxMoA5cpLI7ALbVGvZMkkhmax7GMFWR3bLf0GuySb3feLxYllDDYUu1xS-ZPkYtF38mzJ6uoMVJXD5Y80Y8qTq7TOByY2UzBrljCNIOn2E_lkfYF2BDK5dbqM4gNxmlVllGVA6JFEygcneEGwb3a8MNuepwk-063LC7NdxsZGV_SbbMjjKatjaRO8OtRVMdbuep7O4KtzhFdjfcFJvUK-yrgk08Em1oc7Y1xp5pe6RJMR0z7o4uNaZOpUZsSeBnXmySKsBwPkh7UZgZMl4ba7i6xXPCkoSUaoGKCxI22NqEbk-ASy9rbcZuY6p3ax1R0skkzaYpAhBU3fYaxtPIWYDfcbZqXYB_7Vx5JYuBfJRCDELnutuCC1xpLavuu9Pv-NLVteoC4GOWrQPxQeawF-QMxloYGVLw0hYooYpXhklvVyWoQJWPNEWFeG93IXDRtuYuPdKtmoTZ33OqQDVHMet5nENSruoq2DICJcYagIyrHlaGXmu42kjTCILJtkFHZXCw1gDUoHbq08aYlVnOMad7ujBM5cSR6MZNjbZU-i9xt9_lbv9V7vZtzV16Wtzt73I3nom8yN9-098--tt_3t9-h7_9V_jbb_G3v1Nfi7997e8ZzvwZh1c6pdRPQN-Kj8qIhTPjCmbpF4ViB0yZRRvxnxbeacLvNzlLnqm6GoYlV7d21lsTFFhC2irt9LlKO31lpZ0alXaKTt6ZeQpT23b6_eX7LQdsae3QgW6emnHZlXMwubWz0bIZLX345t6527Jg5myNpNmdXxbUUo2j2aVLz9rIFp1bzaSyYFrRi3Jq2ppTUzenpm05Nf0HOfUp-8HJB57yXLwdX2zK9QZeZMMkE--1ZUaycgkPt0kW3ql4cE4C5Oy0AMWPwJaty26wmXfdSCdhHUzgzsVwy4cLlarg7VBEs4wTdFKByQqQU5aEJwswIXxvEiFpxoQxCRBtYQqpGXEP-pkv4qLMH_SBg9KBRJvfZtBiplm-YuqkVh1j6Tcxgn3FkyXGZMDXt7Op8fIGCCDUdoHGzW7-9_chT2wJklTLkM1npHzDZccQIii1DNGyRYhxKyNc5nFabiGZN4l4iYHGW3vSOEYTbXVL5Z29klKnl4gLyAxJDcSTCHzZ4vlNB6NIOBECjYTDsNNhWd8n6ADUiqpws96OnAR1ghtfiNPEOoTFduMY1oG94GD9xLjZeX8f77jpEL2A3opvwaZ9o-i1ZQUhkKj62qcJ7Txur4Y2Kx8gASM-Fzdu0K1KQSguDs74XPQwUWnncZJMfvEj8U8hqbI7PlFXYqp58DOOyuXEX9_TUNx9TcQ9W0NaGMv3KhTXO-6Hw1ElbhCx0Xz-CnFrVW2UNNa_7dWDG7Lb21H_FdK4PLlHWSCJ9Vglaz4fhsPwFbLiTFsMxPTHlaDb_mgUHb9CUAGrnbjvQmmDw_6od1xJ44dsMBw_L80KxAeQCT43HW3e8VDnJoZat1vUur-gxuE7ta8NqL1rpI3jMGqfalLzaI_aR1C0PpihbccOtHpTpfa7WtX07Q7ZrJZ5qrck1NqbUHMrQJ06THXJojrddGibZnVSjzo3QtS60KH6PJ92nL1T81CF6nMIql4LqPOC6bRxypXBppp5qpitfRU1NjxUr-20XpcpLilUrxZUrQvULMPUKMHUqZnSajp9TYtZlz7UvlSj5oE5bT06puaOm7ae_1H3-IM6hwEuwHcAPnV29tTZ_co6Yk4KzVdfllPzcJuaZ5HUPm2jzpmE065Horb8cWaqbd7o08ZFMu28L6bm4ThtHGHS5i5LlSr3kp8vqqW32lqaRHmz-f1MpU-gH24mk4mdUwhUO0y90xQwK44QhXe1yiO_4UUtIA3XIO78wviVglzN3yd4egFobU6EznB6gfH7CWFTAbRm3ji9hboBcqEUblYpgQjINmXbzGHBPqjn1zJlBXjvzkHfOB_I-dizU-TZzgH-J47E-GS1BUniZy-Gfmje4S5hPCJq5UmzlLcijp5FjJ9FHDcRECwe9RZ5HHmTMt9w6q04FGPR9LYCcu3JHwZdexN4FL8Vuvau0yfgWbP0f1m20mx5tlksvcmcJQW0NjKAz2IGUVlDQJn4PdAmLb0JLN1ChDfZevfexD_uvxn0B8eD_uFh72jsD6j34E0OBuPRm8PhUe9w1Ov3_KPj4RP1_pZKe2_G42FvMO4PjwYDfzgaHFGPRzFY-RP-1En-4unp_1gEbLk) and below:
+Decision tree available both [here](https://mermaid.live/view#pako:eNqdWg9T27gS_yqa3PB4NyN6xCEpZOau00LTx0x7MIW2855hOsJREg-OnbOdFi7w3d9qV7Il2Q5wMJNYq9_uSvtPspRNL8qmsjfu7exs4jQux2yzWy7kUu6O2e5U5Le7nBHhq8hjcZPIAno2bHeVx0uR3x9nSZYr7C9DMYzkSMF116W8K-vu2Wxm9b3L8qnM25iTOJU1Xeyrf0UvZJSlU0fjKBCHUuAAZV7GTt_gSP3vPj4-7uxcpbMk-xktRF6yy5OrlMHfzg77JOKUidUqiSNRxlnKFIr9jMsFy-V0Hckp-6HkRiJhxUpEcTon3osSJIX4CUKS-d7b48u31-z33_9gHzMxPZd5ERelTMsTUYpQkVhNYx_hu7gmSU04SjmJi1Ui7j98OQ31I4NnzVN3sr29P9iXQuanKRhARGoSoWozi6C5qlkr9TDqVMzBp2lJdE8ICiYMjnZDzzT0N4_EY_Ur_MN_ZfGAiAuZSBSzQV1VU_M5EOQ8TmIYCXB_WU1FKXVT4UKiME1C3utOMVka5RLRoihkLU_TNdmR67HYChqDaTO3A23q6Wap_HEpixIii33L8lsVgO3G_TN7MEgD3FAAaqrxigeqmFsH0QZGN56mq3V5LnKxhPnkRYjtaqh1hzaVB8dZfxVJrKyCfRvTIqgeqwNB5afpD0V7YBeL7CeS3-d5loeqSawMCVqvi0K13lC6FH0lNR-z6BatMhORDFWLQVpNYplM6xS1IKjiPM_KLMoSir6NaTYCvXLxifwRA-_xQoL8G1FAYYGQNXwEc4WiHmJDrg3xfpZ_rWOoTbqr0IosIE5O97I_sxJYxPT-QUO-iTwFB5I59ag07doWpWnd0dulUWszk3mXizRa1Ba6vF9J3zjH6xtZRda_j7PlKpdFAZp-m-RZUf7KXPuQSMp3xdlgeECJWuCkSij6LNY381ysFj4mbJdlxqWNo_4U8BTWyVB9xBBFf1ejv9YBaOhnaom7BLvdKptbeOxgpscS3sFLfsAaA2aYqyGaAvYvsxywC1imVPtcdTODs4S7AqjES1Gsc1wHjhcZeHCDqwfFYGF3P9Zy6ifwHmm1gFAcykUNaWhAzxEXqZEq21UbymeK7Q11V-03lnIXWVU3JDvRTTLc4K4EOPHtmGWrJiyN5wnUgbMUu0NgW65gz4REdrGSUQxTVdmN_ZZemw31fpPxfFFCDYct1Ya-MH2sWq7-bJg7XUWLk7i8d-ZNeFZ1dpnA56bKZg1yyxDQDp9hP5ZPqS-khlGOW6jOILcZUSuWEZ1DKgUTqNwd4UbB_dJwI6463LBdhxt1t4abi6zsj2TH7CSjaWsbuTXcWjTV4XaaYndXuMUpsfvhptlQr7KvDjb1yIyh7dnWGHem7ZGGYjpm3B1dekydSq3YQuBnWayTKsBoPkR7VphZMl4aa7S6xTMmkoSVeoGKCxY12NqEbt4Cl1nW2ozdxlTv1jqipJMJzWYoChBW3e4aJtOptwC_k2LZugD_2rnyIouFfEAhFqFz3W3Bhb60llX33fF3eunqWnUB8DHLVqH6YDPYC0oBYy2sDClk6QpEqObFMOlvqwQVqPKRoegQ728vBD7a1dylB91qSJT9fa8KVHNUs57FOSTlsq6CLSPQYpwBYFz1qTL0W8PVRdpGUEyuDToqg4d1BqAHtVWfMcZFmeWScrpvCsMEJ05EP25qtKMyeI67gy53By9yd-Bq7tLT4u5gm7vpTORZ_g6a_g7I38HT_g46_B28wN9Bi7-Drfpa_B0Yf1_QzJ9weKUTpX4C-kZ9VEYsvBlXMEe_KhRbYNosxoj_tPBOEnm3zkXyRNU1MCq5prW13tqg0BHSVmknT1XayQsr7cSqtBNy8tbM05jatpPvz99veWBHa4cOcvPEjsuunIPJrbyNlsvo6KM3987dlgOzZ2slzfb8cqCOahrNNl1m1la2mNxqJpUDM4qelVOT1pya-Dk1acupyT_IqU_ZD8k-yFTm6u34bF2u1vAiGyWZeq8tM5aVC3i4SbLoVseDdxKAszMCND8BW7Yu28F23nUjvYT1MKE_F8stH850qoK3IxXNGCfkpIKSFSC0lfws53FR5vfm3MC0XXEu1kiYZPlS6LNWfRBl3qUY9RWPjhibgV7ATibW6xcggFDPDBrX2_nf30UycSUgqZaBzSekfKOFwxKiKLUM1XJFqHFrI5zncVpuIB3XiXoNgcYbd9I0RhvtdKPyzl6k1AmiPAuxjdRQPanQxZbMrzsYVcoAoZkyFDgmsOobARNCRpEZnfta5KWYF570SpsmzjEqtRsHqR7sGUfjb627mfd38Za7CtUL6I36VmzGN5peW1YRQkTVFzdNaOeBeTW0i_IeXlincqbuzKBbJ3Okjv5P5Ez1CFUrZ3GSjH8JpuqfQ1Jlt3KsL7V0c-9nPC0X42B1xyN1ezVWN2UNaVGMb0Ykrn80iIajStzBVIxmsxeIW-l6oaWJwU2_HtxQ3NyMBi-QJvHsnWSBJNEXlazZbBgNoxfIijNjMRAzOKwE3QxGo-nRCwQVsF6pGyuSdrA_GPWPKmlyXxwMD5-W5gTiPcgEn9uOtm9puHeXwp37Ke7cQHDr-Jy7B__c3ffxxoEWd88luX04x91DJF4frfC2gwNevWty922ragZuBzarhZqbTQV3dhfcXsy5V4e5KVncpJsJbdusXupx706HO1cy3JzI847Tc24fi3BzksD1xp57r4hem6ZcGWximCea2dkZcWvLws3qrB6ORRK9nSMNlhRuVguu1wVul2FulWDu1Uy0mklf22LOtQ13r8W4feTNWw9_ub1n5q0neNw_wODe67wPCDxAwL29Off2r1hH7EmR-errbm4fT3P7NJG752XcO1Xw2vVI9KY9zmy1zTt53rgK5p03vtw-3uaNQ0je3GXpUuVf08t5tfRWm0ObiHeT3090-oTm4Xo8Hrs5RUC9RzR7RQVz4ohQdNuqPfIbXbUC0nIN4U7PrN8Z4Gr-PqHzB0AbcxL0gqYXWr-AELChcc9tmTKz4nWM0TiShVICqqA6rpcpg6DI1mWbMWAN36un3GIFDXjvT8tcI-_hFN0Ja_LF1gH-J56q8WEBBknqtyyWfmje0sbhcMT0YpRmqWxFvH4Scfgk4qiJgPjp8d48j6e9cZmvJe8tJdRn1extFOSqh7_2ueqN4VH9AOiqd5U-As9KpP_LsqVhy7P1fNEbz0RSQGuNMX0SCwjUGgLK1I981mnZGw9RQm-86d31xnv94f6rwcGwfxgMXweDYLR_yHv3QA8ORq9G_deDwbA_PNg_PDp6_ch7f6Pawav-6OCwDz2Hw-Cg_5r35DQGK3-i3y_hz5ge_w-WCGAo) and below:
 
 ```mermaid
 %%{init: {'theme': 'dark', 'themeVariables': { 'primaryColor': '#5a5ce6', 'primaryTextColor': '#fff', 'primaryBorderColor': '#5a5ce6', 'lineColor': '#a0a0a0', 'secondaryColor': '#62a8ea', 'tertiaryColor': '#393939'}}}%%
@@ -249,8 +250,7 @@ flowchart TD
     BeamFlexuralFlow --> GenerateOutputs
     
     subgraph GenerateOutputs[Generate Outputs]
-        GO_Start[Process Test Results] --> GO_CalcAge[Calculate Sample Age]
-        GO_CalcAge --> GO_UpdateRegistry[Update Test Registry]
+        GO_Start[Process Test Results] --> GO_UpdateRegistry[Update Registry]
         GO_UpdateRegistry --> GO_FormatSelect{Check Selected Formats}
         GO_FormatSelect -->|PDF Selected| GO_PDF[Generate PDF]
         GO_FormatSelect -->|Excel Selected| GO_Excel[Generate Excel]
@@ -292,7 +292,7 @@ flowchart TD
         L_Process[Process]:::process
         L_Error[Warning/Error]:::error
         L_IO[User Interface Element]:::io
-        L_Storage[Persistent Data]:::storage
+        L_Storage[Persistent and Order Tracking Data]:::storage
         
         %% Force column layout
         L_Decision --- L_Process
@@ -306,4 +306,88 @@ flowchart TD
         linkStyle 88 stroke:none
         linkStyle 89 stroke:none
     end
+```
+
+## Language Distribution
+
+### Python Components:
+- Core state machine;
+- Plugin manager;
+- Device plugins (including serial communication);
+- High-level business logic;
+- Data store and persistence.
+
+### Java Components:
+- UI implementation;
+- Receipt generation.
+
+## Project Structure Template
+
+```
+malg-acta/
+├── main.py                              # Application entry point
+├── app_modules/
+│   ├── core/
+│   │   ├── state_machine.py             # Application flow control point
+│   │   └── plugin_manager.py            # Manages loading and lifecycle of all plugins
+│   ├── states/
+│   │   ├── base_state.py                # Abstract base class for all states
+│   │   ├── idle_state.py                # Idle (waiting) state 
+│   │   ├── input_state.py               # User input state 
+│   │   ├── acquisition_state.py         # Base class for acquisition
+│   │   ├── dissemination_state.py       # Report generating + printing state 
+│   │   └── error_state.py               # Error and warning state
+│   ├── models/
+│   │   ├── batch.py                     # Batch data model
+│   │   ├── set.py                       # Set data model
+│   │   ├── specimen.py                  # Specimen data model
+│   │   ├── scale_data.py                # Scale data model
+│   │   └── press_data.py                # Press data model
+│   ├── protocols/
+│   │   ├── protocol_interface.py        # Abstract base class for all protocols
+│   │   ├── cube_compression.py          # Cube compression testing
+│   │   ├── cube_frost.py                # Cube frost testing
+│   │   ├── beam_compression.py          # Beam compression testing
+│   │   └── beam_flexural.py             # Beam flexural testing
+│   ├── input/
+│   │   ├── input_interface.py           # Interface for user input
+│   │   └── input_plugins...
+│   ├── acquisition/
+│   │   ├── acquisition_interface.py     # Interface for device acquisition
+│   │   ├── scale_plugin.py              # Scale communication 
+│   │   └── press_plugin.py              # Press communication 
+│   ├── output/
+│   │   ├── output_interface.py          # Interface for receipt generators
+│   │   ├── printer_plugin.py            # Printer communication 
+│   │   └── output_plugins...
+│   ├── data_storage/
+│   ├── device_connection/
+│   │   ├── serial_manager.py            # Manages serial port connections
+│   │   └── device_detector.py           # Detects connected devices
+│   ├── bridges/
+│   │   ├── communication.py             # Inter-module communication bridge
+│   │   └── java_bridge.py               # Bridge to Java components
+│   ├── data_storage/
+│   │   ├── concrete_classes_manager.py
+│   │   ├── clients_manager.py
+│   │   └── registry_manager.py
+│   └── utils/
+│       ├── custom_logging.py            # Logging setup and utilities
+│       ├── custom_typing.py             # Custom typing
+│       ├── custom_errors.py             # Custom error
+│       └── config_loader.py             # Configuration loader and manager
+├── configs/
+│   ├── app_config.yaml                  # Main application configuration
+│   └── plugin_modules.yaml              # After implementing plugin, add it here
+├── logs/
+├── data/
+│   ├── reports/
+│   ├── concrete_classes.json            # Concrete classes list
+│   ├── clients.json                     # Client list
+│   └── registry.json                    # Registry storage
+├── examples/                            # Examples
+├── .gitignore                           # Files and folders that shouldn't appear on GitHub
+├── requirements.txt                     # Environment requirements
+├── LICENSE                              # Repository license
+└── README.md                            # Project documentation
 ```
