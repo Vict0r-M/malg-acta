@@ -10,10 +10,15 @@
         <maven.compiler.target>11</maven.compiler.target>
     </properties>
     <dependencies>
+	    <dependency>
+	        <groupId>org.openjfx</groupId>
+	        <artifactId>javafx-base</artifactId>
+	        <version>11.0.2</version>
+	    </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
-            <version>13</version>
+            <version>11.0.2</version>
         </dependency>
         <dependency>
 		    <groupId>com.fasterxml.jackson.core</groupId>
@@ -41,7 +46,7 @@
                         <!-- Usage: mvn clean javafx:run -->
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>com.malg_acta.gui_app.Main</mainClass>
+                            <mainClass>com.malg_acta.gui_app.MainApp</mainClass>
                         </configuration>
                     </execution>
                 </executions>
@@ -51,9 +56,21 @@
       			<artifactId>exec-maven-plugin</artifactId>
       			<version>3.5.1</version>
       			<configuration>
-        			<mainClass>com.malg_acta.gui_app.Main</mainClass>
+        			<mainClass>com.malg_acta.gui_app.MainApp</mainClass>
       			</configuration>
     		</plugin>
+    		<plugin>
+    			<groupId>org.apache.maven.plugins</groupId>
+    			<artifactId>maven-dependency-plugin</artifactId>
+			    <version>3.2.0</version>
+			    <executions>
+		        <execution>
+		            <goals>
+		                <goal>copy-dependencies</goal>
+		            </goals>
+		        </execution>
+			    </executions>
+			</plugin>
         </plugins>
     </build>
 </project>
