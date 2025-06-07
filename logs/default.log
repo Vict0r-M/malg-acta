@@ -1,0 +1,7 @@
+07.06.2025 21:46:09 - INFO - main.py:67 - Malg-ACTA starting...
+07.06.2025 21:46:09 - INFO - main.py:26 - Successfully imported required modules
+07.06.2025 21:46:09 - INFO - main.py:94 - Configuration file configs\app_config.yaml loaded and validated
+07.06.2025 21:46:09 - INFO - main.py:99 - Logger configured with final settings
+
+07.06.2025 21:46:09 - INFO - main.py:100 - Initialization complete
+07.06.2025 21:46:09 - INFO - main.py:103 - Malg-ACTA system initialized successfully
