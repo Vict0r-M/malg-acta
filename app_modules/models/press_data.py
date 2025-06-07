@@ -2,7 +2,7 @@
 
 #%% Dependencies:
 
-from typing import ClassVar
+from typing import ClassVar, Any
 from pydantic import BaseModel, Field, field_validator
 
 #%% Main Class:
@@ -23,6 +23,7 @@ class PressData(BaseModel):
     strength_decimals: int = Field(default=2, ge=0, le=6)
     load_unit: str = Field(default="N")
     strength_unit: str = Field(default="N/mm²")  # Not SI, but practical standard
+
 
     @field_validator('load_unit')
     @classmethod
@@ -56,7 +57,7 @@ class PressData(BaseModel):
         return f"{self.strength:.{self.strength_decimals}f} {self.strength_unit}"
 
 
-    def set_load_format(self, decimals: int = None, unit: str = None) -> None:
+    def set_load_format(self, ctx: Any, decimals: int = None, unit: str = None) -> None:
         """Update load formatting configuration and convert units if needed"""
 
         if decimals is not None:
@@ -65,7 +66,7 @@ class PressData(BaseModel):
         if unit is not None:
             # Validate unit first:
             if unit not in self.ALLOWED_LOAD_UNITS:
-                raise ValueError(f"Load unit must be one of: {', '.join(sorted(self.ALLOWED_LOAD_UNITS))}")
+                raise ctx.errors.ValidationError(f"Load unit must be one of: {', '.join(sorted(self.ALLOWED_LOAD_UNITS))}")
 
             # Define conversion factors relative to base SI unit (N):
             load_conversions = {"N": 1.0,        # Newton
@@ -76,11 +77,15 @@ class PressData(BaseModel):
             new_factor = load_conversions[unit]
 
             # Convert value - first to base unit (N), then to target unit:
+            old_load = self.load
+            old_unit = self.load_unit
             self.load = self.load / current_factor * new_factor
             self.load_unit = unit
 
+            ctx.logger.info(f"Converted load from {old_load} {old_unit} to {self.load} {unit}")
 
-    def set_strength_format(self, decimals: int = None, unit: str = None) -> None:
+
+    def set_strength_format(self, ctx: Any, decimals: int = None, unit: str = None) -> None:
         """Update strength formatting configuration and convert units if needed"""
 
         if decimals is not None:
@@ -89,10 +94,10 @@ class PressData(BaseModel):
         if unit is not None:
             # Validate unit first:
             if unit not in self.ALLOWED_STRENGTH_UNITS:
-                raise ValueError(f"Strength unit must be one of: {', '.join(sorted(self.ALLOWED_STRENGTH_UNITS))}")
+                raise ctx.errors.ValidationError(f"Strength unit must be one of: {', '.join(sorted(self.ALLOWED_STRENGTH_UNITS))}")
 
             # Define conversion factors relative to base SI unit (N/mm²):
-            strength_conversions = {"N/mm²": 1.0,     # Not SI, but practical stadard
+            strength_conversions = {"N/mm²": 1.0,     # Not SI, but practical standard
                                     "MPa": 1.0,       # 1 N/mm² = 1 MPa
                                     "Pa": 1000000.0,  # 1 N/mm² = 1,000,000 Pa
                                     "kPa": 1000.0,    # 1 N/mm² = 1,000 kPa
@@ -102,7 +107,11 @@ class PressData(BaseModel):
             new_factor = strength_conversions[unit]
 
             # Convert value - first to base unit (N/mm²), then to target unit:
+            old_strength = self.strength
+            old_unit = self.strength_unit
             self.strength = self.strength / current_factor * new_factor
             self.strength_unit = unit
+
+            ctx.logger.info(f"Converted strength from {old_strength} {old_unit} to {self.strength} {unit}")
 
 #%%

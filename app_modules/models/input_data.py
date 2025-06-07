@@ -3,7 +3,7 @@
 #%% Dependencies:
 
 from datetime import datetime
-from typing import List, Literal
+from typing import List, Literal, Any
 from pydantic import BaseModel, Field, field_validator
 
 #%% Main Class:
@@ -31,12 +31,12 @@ class InputData(BaseModel):
 
     sampling_date: str = Field(..., description="Sampling date in DD.MM.YYYY format")
     testing_date: str = Field(default_factory=lambda: datetime.now().strftime("%d.%m.%Y"), 
-                              description="Testing date in DD.MM.YYYY format")  # defaults to current date
+                              description="Testing date in DD.MM.YYYY format")  # Defaults to current date
 
-    sampling_location: str = Field(default="sampling location", description="Location where sampling occurred", 
-                                   min_length=1, max_length=200)
-    project_name: str = Field(default="project name", description="Project name/identifier", 
-                              min_length=1, max_length=200)
+    project_title: str = Field(default="project title", description="Project description/name", 
+                               min_length=1, max_length=200)
+    element: str = Field(default="element", description="Specific componentof interest", 
+                         min_length=1, max_length=200)
 
     set_id: str = Field(..., description="Set identifier/indicative", min_length=1, max_length=100)
     set_size: int = Field(..., description="Number of specimens in the set", gt=0, le=100)
@@ -64,7 +64,7 @@ class InputData(BaseModel):
         return v
 
 
-    @field_validator('client', 'concrete_class', 'set_id', 'sampling_location', 'project_name')
+    @field_validator('client', 'concrete_class', 'set_id', 'project_title', 'element')
     @classmethod
     def validate_string(cls, v: str) -> str:
         """Validate and clean string fields that cannot be empty"""
@@ -95,12 +95,19 @@ class InputData(BaseModel):
         return unique_formats
 
 
-    def get_sample_age(self) -> int:
+    def get_sample_age(self, ctx: Any) -> int:
         """Calculate sample age in days as testing_date - sampling_date"""
 
-        sampling_dt = datetime.strptime(self.sampling_date, "%d.%m.%Y")
-        testing_dt = datetime.strptime(self.testing_date, "%d.%m.%Y")
-        age_delta = testing_dt - sampling_dt
-        return age_delta.days  # Age in whole days
+        try:
+            sampling_dt = datetime.strptime(self.sampling_date, "%d.%m.%Y")
+            testing_dt = datetime.strptime(self.testing_date, "%d.%m.%Y")
+            age_delta = testing_dt - sampling_dt
+            age_days = age_delta.days
+
+            ctx.logger.info(f"Calculated sample age: {age_days} days (from {self.sampling_date} to {self.testing_date})")
+            return age_days
+
+        except ValueError as e:
+            raise ctx.errors.ValidationError(f"Failed to calculate sample age: {str(e)}")
 
 #%%

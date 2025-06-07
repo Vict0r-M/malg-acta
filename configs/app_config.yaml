@@ -1,0 +1,42 @@
+# Malg-ACTA Application Configuration:
+
+# Logging configuration:
+logging:
+  path: "logs/default.log"  # Log file path (relative to project root)
+  console_enabled: false    # Enable console output alongside file logging
+
+# Data storage configuration:
+data_storage:
+  data_dir: "data"                                     # Main data directory
+  receipts_dir: "data/receipts"                        # Generated receipts directory
+  clients_path: "data/clients.json"                    # Persistent clients list
+  concrete_classes_path: "data/concrete_classes.json"  # Persistent concrete classes list
+  registry_path: "data/registry.json"                  # Testing registry/history
+
+# Device configuration:
+devices:
+  # Scale configuration:
+  scale:
+    port: "/dev/ttyACM1"  # Serial port for scale
+    baudrate: 9600        # Baud rate for scale communication
+    bytesize: 8           # Data bits
+    parity: "none"        # Parity setting
+    stopbits: 1           # Stop bits
+    xonxoff: true         # Software flow control
+    timeout: 1.0          # Read timeout in seconds
+    retry_count: 3        # Number of retry attempts for failed reads
+
+  # Press configuration:
+  press:
+    port: "/dev/ttyACM0"  # Serial port for press
+    baudrate: 38400       # Baud rate for press communication
+    bytesize: 8           # Data bits
+    parity: "none"        # Parity setting
+    stopbits: 1           # Stop bits
+    xonxoff: true         # Software flow control
+    timeout: 1.0          # Read timeout in seconds
+    retry_count: 3        # Number of retry attempts for failed reads
+
+# Plugin system configuration:
+plugins:
+  config_path: "configs/plugin_modules.yaml"  # Plugin modules configuration file
