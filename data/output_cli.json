@@ -1,0 +1,13 @@
+{
+  "protocol" : "Rezistenta la Compresiune Cuburi",
+  "client" : "sdaf",
+  "concrete_class" : "gfsa",
+  "sampling_date" : "12.12.2024",
+  "testing_date" : "08.06.2025",
+  "project_title" : "gfdh",
+  "element" : "hdjn",
+  "set_id" : "12",
+  "set_size" : 12,
+  "should_print" : true,
+  "output_format" : [ "PDF" ]
+}

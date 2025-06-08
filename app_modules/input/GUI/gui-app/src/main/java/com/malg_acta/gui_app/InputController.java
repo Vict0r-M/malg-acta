@@ -206,7 +206,7 @@ public class InputController {
         
         try {
             ObjectMapper mapper = new ObjectMapper();
-            mapper.writerWithDefaultPrettyPrinter().writeValue(new File("output.json"), data);
+            mapper.writerWithDefaultPrettyPrinter().writeValue(new File("..\\..\\..\\data\\output_gui.json"), data);
             logger.logInfo("Datele au fost salvate în fișierul output.json");
         } catch (IOException e) {
             logger.logError("Eroare la salvarea în fișier JSON.");

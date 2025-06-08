@@ -30,8 +30,8 @@ class PythonGUIInterface:
             # Parse JSON to dictionary
             data_dict = json.loads(json_string)
 
-            print(data_dict)
-            print(f"NEW DATA SUBMITTED: {data_dict}")
+            # Log successful data parsing
+            self.log_with_timestamp("INFO", "Testarea poate incepe...")
 
             # Put data in queue for other parts of the program to process
             # self.data_queue.put({
@@ -39,8 +39,15 @@ class PythonGUIInterface:
             #     'data': data
             # })
 
+        except json.JSONDecodeError as e:
+            error_msg = f"Failed to parse JSON data: {e}"
+            print(error_msg)
+            self.log_with_timestamp("ERROR", error_msg)
+
         except Exception as e:
-            print(f"Error in callback: {e}")
+            error_msg = f"Error processing submitted data: {e}"
+            print(error_msg)
+            self.log_with_timestamp("ERROR", error_msg)
             import traceback
             traceback.print_exc()
 
