@@ -1,7 +1,127 @@
-07.06.2025 21:46:09 - INFO - main.py:67 - Malg-ACTA starting...
-07.06.2025 21:46:09 - INFO - main.py:26 - Successfully imported required modules
-07.06.2025 21:46:09 - INFO - main.py:94 - Configuration file configs\app_config.yaml loaded and validated
-07.06.2025 21:46:09 - INFO - main.py:99 - Logger configured with final settings
+10.06.2025 18:49:21 - INFO - main.py:226 - Malg-ACTA starting...
+10.06.2025 18:49:21 - INFO - main.py:30 - Successfully imported required modules
+10.06.2025 18:49:21 - INFO - main.py:49 - Successfully imported all state modules
+10.06.2025 18:49:21 - INFO - main.py:64 - Successfully imported data models
+10.06.2025 18:49:21 - INFO - main.py:79 - Successfully imported interface modules
+10.06.2025 18:49:21 - INFO - main.py:262 - Configuration file configs\app_config.yaml loaded and validated
+10.06.2025 18:49:21 - INFO - main.py:267 - Logger configured with final settings
 
-07.06.2025 21:46:09 - INFO - main.py:100 - Initialization complete
-07.06.2025 21:46:09 - INFO - main.py:103 - Malg-ACTA system initialized successfully
+10.06.2025 18:49:21 - INFO - main.py:268 - Initialization complete
+10.06.2025 18:49:21 - INFO - main.py:271 - Malg-ACTA system initialization starting...
+10.06.2025 18:49:21 - INFO - main.py:104 - Initializing plugin manager...
+10.06.2025 18:49:21 - INFO - plugin_manager.py:42 - Plugin configuration processed successfully
+10.06.2025 18:49:21 - INFO - plugin_manager.py:57 - Plugin category 'input': 2 plugins available
+10.06.2025 18:49:21 - INFO - plugin_manager.py:57 - Plugin category 'acquisition': 2 plugins available
+10.06.2025 18:49:21 - INFO - plugin_manager.py:57 - Plugin category 'output': 2 plugins available
+10.06.2025 18:49:21 - INFO - plugin_manager.py:57 - Plugin category 'protocols': 4 plugins available
+10.06.2025 18:49:21 - INFO - plugin_manager.py:57 - Plugin category 'data_storage': 3 plugins available
+10.06.2025 18:49:21 - INFO - plugin_manager.py:57 - Plugin category 'device_connection': 2 plugins available
+10.06.2025 18:49:21 - INFO - plugin_manager.py:29 - PluginManager initialized with 6 plugin categories
+10.06.2025 18:49:21 - INFO - main.py:117 - Plugin manager initialized successfully
+10.06.2025 18:49:21 - INFO - main.py:130 - Initializing input interface...
+10.06.2025 18:49:21 - INFO - plugin_manager.py:90 - Loading strategy: input.cli
+10.06.2025 18:49:21 - INFO - plugin_manager.py:148 - Importing plugin: app_modules.input.cli.cli_bridge.CLIBridge
+10.06.2025 18:49:21 - INFO - plugin_manager.py:157 - Plugin class loaded successfully: input.cli
+10.06.2025 18:49:21 - INFO - plugin_manager.py:110 - Strategy input.cli loaded successfully
+10.06.2025 18:49:21 - INFO - cli_bridge.py:38 - Setting up CLI bridge...
+10.06.2025 18:49:21 - INFO - cli_bridge.py:175 - Starting JVM with classpath: ['C:\\Users\\V\\Projects\\malg-acta\\app_modules\\input\\cli\\cli-app\\target\\cli-app-0.0.1-SNAPSHOT-jar-with-dependencies.jar']
+10.06.2025 18:49:22 - INFO - cli_bridge.py:184 - JVM started successfully
+10.06.2025 18:49:22 - INFO - cli_bridge.py:203 - Loading InputCLI class...
+10.06.2025 18:49:22 - INFO - cli_bridge.py:205 - InputCLI class loaded successfully
+10.06.2025 18:49:22 - INFO - cli_bridge.py:49 - CLI bridge setup completed successfully
+10.06.2025 18:49:22 - INFO - input_interface.py:103 - User message routing configured successfully
+10.06.2025 18:49:22 - INFO - input_interface.py:62 - InputInterface initialized with cli strategy
+10.06.2025 18:49:22 - INFO - main.py:135 - Input interface initialized successfully
+10.06.2025 18:49:22 - INFO - main.py:154 - Creating state instances...
+10.06.2025 18:49:22 - INFO - main.py:167 - All state instances created successfully
+10.06.2025 18:49:22 - INFO - main.py:186 - Initializing state machine...
+10.06.2025 18:49:22 - INFO - state_machine.py:41 - StateMachine initialized
+10.06.2025 18:49:22 - INFO - main.py:196 - State machine initialized successfully
+10.06.2025 18:49:22 - INFO - main.py:287 - Malg-ACTA system initialized successfully
+
+10.06.2025 18:49:22 - INFO - main.py:288 - Starting application...
+10.06.2025 18:49:22 - INFO - main.py:306 - Starting Malg-ACTA application...
+10.06.2025 18:49:22 - INFO - state_machine.py:49 - Starting state machine
+10.06.2025 18:49:22 - INFO - state_machine.py:129 - Loaded state: idle_state
+10.06.2025 18:49:22 - INFO - idle_state.py:122 - Exiting idle state
+10.06.2025 18:49:22 - INFO - state_machine.py:129 - Loaded state: error_state
+10.06.2025 18:49:22 - INFO - error_state.py:30 - Entering error state - analyzing error
+10.06.2025 18:49:22 - ERROR - error_state.py:44 - Error from idle_state: Idle state exited unexpectedly
+10.06.2025 18:49:22 - ERROR - error_state.py:46 - Error type: StateMachineError
+10.06.2025 18:49:22 - INFO - state_machine.py:159 - Transitioned from idle_state to error_state
+10.06.2025 18:49:22 - INFO - error_state.py:103 - Exiting error state
+10.06.2025 18:49:22 - INFO - state_machine.py:129 - Loaded state: idle_state
+10.06.2025 18:49:22 - INFO - idle_state.py:35 - Entering idle state - system ready
+10.06.2025 18:49:22 - INFO - state_machine.py:159 - Transitioned from error_state to idle_state
+10.06.2025 18:49:22 - INFO - idle_state.py:77 - User initiated testing workflow
+10.06.2025 18:49:22 - INFO - idle_state.py:122 - Exiting idle state
+10.06.2025 18:49:22 - INFO - state_machine.py:129 - Loaded state: input_state
+10.06.2025 18:49:22 - INFO - input_state.py:33 - Entering input state - ready for user data
+10.06.2025 18:49:22 - INFO - state_machine.py:159 - Transitioned from idle_state to input_state
+10.06.2025 18:49:22 - INFO - input_state.py:69 - Starting user data collection
+10.06.2025 18:49:22 - INFO - input_interface.py:115 - Starting user input collection
+10.06.2025 18:49:22 - INFO - cli_bridge.py:67 - Starting CLI input collection...
+10.06.2025 18:49:22 - INFO - cli_bridge.py:222 - Starting Java CLI application...
+10.06.2025 18:49:37 - INFO - cli_bridge.py:270 - Java object converted to Python dictionary successfully
+10.06.2025 18:49:37 - INFO - cli_bridge.py:236 - CLI data collection completed
+10.06.2025 18:49:37 - INFO - cli_bridge.py:84 - User completed CLI input
+10.06.2025 18:49:37 - INFO - input_interface.py:121 - Raw user data collected, processing...
+10.06.2025 18:49:37 - INFO - input_interface.py:275 - CLI data transformed successfully
+10.06.2025 18:49:37 - INFO - input_interface.py:129 - User input validation successful
+10.06.2025 18:49:37 - INFO - input_state.py:98 - Collected input data for protocol: cube_frost_testing
+10.06.2025 18:49:37 - INFO - input_state.py:99 - Set ID: 1, Size: 1
+10.06.2025 18:49:37 - INFO - input_state.py:100 - Client: 2
+10.06.2025 18:49:37 - INFO - input_state.py:220 - Cube frost validation: requires scale and press measurements in specific order
+10.06.2025 18:49:37 - INFO - input_state.py:197 - Protocol-specific validation passed for cube_frost_testing
+10.06.2025 18:49:37 - INFO - input_state.py:106 - Input validation completed successfully
+10.06.2025 18:49:37 - INFO - input_state.py:149 - Exiting input state
+10.06.2025 18:49:37 - INFO - input_state.py:153 - Input data collected: cube_frost_testing for 1 specimens
+10.06.2025 18:49:37 - INFO - state_machine.py:129 - Loaded state: acquisition_state
+10.06.2025 18:49:37 - INFO - acquisition_state.py:33 - Entering acquisition state - preparing for testing
+10.06.2025 18:49:37 - INFO - acquisition_state.py:39 - Starting cube_frost_testing for 1 specimens
+10.06.2025 18:49:37 - INFO - acquisition_state.py:166 - Created set data structure for 1 specimens
+10.06.2025 18:49:37 - INFO - state_machine.py:159 - Transitioned from input_state to acquisition_state
+10.06.2025 18:49:37 - INFO - acquisition_state.py:65 - Starting specimen data collection
+10.06.2025 18:49:40 - INFO - set_data.py:48 - Added specimen to set. Count: 1/1
+10.06.2025 18:49:40 - INFO - acquisition_state.py:84 - Specimen 1 data collected successfully
+10.06.2025 18:49:40 - INFO - acquisition_state.py:87 - All specimen data collected successfully
+10.06.2025 18:49:40 - INFO - acquisition_state.py:127 - Exiting acquisition state
+10.06.2025 18:49:40 - INFO - acquisition_state.py:131 - Successfully collected data for 1 specimens
+10.06.2025 18:49:40 - INFO - state_machine.py:129 - Loaded state: dissemination_state
+10.06.2025 18:49:40 - INFO - dissemination_state.py:36 - Entering dissemination state - processing results
+10.06.2025 18:49:40 - INFO - state_machine.py:159 - Transitioned from acquisition_state to dissemination_state
+10.06.2025 18:49:40 - INFO - dissemination_state.py:66 - Starting result processing and output generation
+10.06.2025 18:49:40 - INFO - input_data.py:107 - Calculated sample age: 333679 days (from 11.11.1111 to 10.06.2025)
+10.06.2025 18:49:40 - INFO - dissemination_state.py:155 - Sample age calculated: 333679 days
+10.06.2025 18:49:40 - INFO - dissemination_state.py:169 - Processing test results...
+10.06.2025 18:49:40 - INFO - dissemination_state.py:234 - Calculated statistics for 1 strength measurements
+10.06.2025 18:49:40 - INFO - dissemination_state.py:202 - Processed 1 specimens for cube_frost_testing
+10.06.2025 18:49:40 - INFO - dissemination_state.py:248 - Generating output formats: PDF
+10.06.2025 18:49:40 - INFO - dissemination_state.py:269 - Generating PDF format...
+10.06.2025 18:49:41 - INFO - dissemination_state.py:278 - Generated mock PDF: 1_20250610_184941.pdf
+10.06.2025 18:49:41 - INFO - dissemination_state.py:253 - All requested formats generated successfully
+10.06.2025 18:49:41 - INFO - dissemination_state.py:294 - Updating testing registry...
+10.06.2025 18:49:42 - INFO - dissemination_state.py:309 - Registry updated with entry for set 1
+10.06.2025 18:49:42 - INFO - cli_bridge.py:112 - Unlocking CLI interface...
+10.06.2025 18:49:44 - INFO - cli_bridge.py:124 - Application will now exit
+10.06.2025 18:49:44 - INFO - input_interface.py:160 - Interface unlocked successfully
+10.06.2025 18:49:44 - INFO - dissemination_state.py:123 - Exiting dissemination state
+10.06.2025 18:49:44 - INFO - dissemination_state.py:127 - Successfully processed 1 specimens
+10.06.2025 18:49:44 - INFO - state_machine.py:129 - Loaded state: idle_state
+10.06.2025 18:49:44 - INFO - idle_state.py:35 - Entering idle state - system ready
+10.06.2025 18:49:44 - INFO - state_machine.py:159 - Transitioned from dissemination_state to idle_state
+10.06.2025 18:49:44 - INFO - idle_state.py:188 - User chose to exit application
+10.06.2025 18:49:44 - INFO - idle_state.py:85 - User requested application exit
+10.06.2025 18:49:44 - INFO - state_machine.py:63 - State machine stop requested
+10.06.2025 18:49:44 - INFO - state_machine.py:190 - Cleaning up state machine...
+10.06.2025 18:49:44 - INFO - idle_state.py:122 - Exiting idle state
+10.06.2025 18:49:44 - INFO - state_machine.py:197 - State machine cleanup completed
+10.06.2025 18:49:44 - INFO - input_interface.py:283 - Shutting down input interface...
+10.06.2025 18:49:44 - INFO - cli_bridge.py:137 - Shutting down CLI bridge...
+10.06.2025 18:49:44 - INFO - cli_bridge.py:148 - CLI bridge shutdown completed
+10.06.2025 18:49:44 - INFO - input_interface.py:285 - Input interface shutdown completed
+10.06.2025 18:49:44 - INFO - state_machine.py:190 - Cleaning up state machine...
+10.06.2025 18:49:44 - INFO - idle_state.py:122 - Exiting idle state
+10.06.2025 18:49:44 - INFO - state_machine.py:197 - State machine cleanup completed
+10.06.2025 18:49:44 - INFO - main.py:316 - Application shutdown completed successfully
+10.06.2025 18:49:44 - INFO - main.py:331 - Malg-ACTA application shutdown
