@@ -50,6 +50,9 @@ class Logger:
         self._error_handler: Optional[FileExceptionHandler] = None
         self._logger: Optional[logging.Logger] = None
 
+        # User messaging setup:
+        self.user_message_handler = None
+
         # Setup initial logging:
         self._first_setup = True
         self._setup_logger()
@@ -63,7 +66,7 @@ class Logger:
 
         # Create or get the logger:
         if self._logger is None:
-            self._logger = logging.getLogger('pdf_modifier')
+            self._logger = logging.getLogger('malg_acta')
             self._logger.setLevel(logging.INFO)
             self._logger.propagate = False  # Prevent logs from propagating to the root logger
 
@@ -170,15 +173,30 @@ class Logger:
         self.info(f"Console output {'enabled' if console_enabled else 'disabled'}")
 
 
-    # Convenience methods to log messages:
-    def info(self, message: str) -> None:
-        """Log an info message"""
+    def _log_with_target(self, level: str, message: str, target: str) -> None:
+        """Route log message based on target"""
 
-        self._logger.info(message, stacklevel=2)
+        if target in ["dev", "both"]:
+            log_method = getattr(self._logger, level)
+            log_method(message, stacklevel=3)
+
+        if target in ["user", "both"] and self.user_message_handler is not None:
+            try:
+                self.user_message_handler(level.upper(), message)
+            except Exception as e:
+                # If user messaging fails, log to dev channel:
+                self._logger.warning(f"User message failed: {str(e)}")
+
+
+    # Convenience methods to log messages:
+    def info(self, message: str, target: str = "dev") -> None:
+        """Log an info message with optional target routing"""
+
+        self._log_with_target("info", message, target)
 
 
     def info_with_newline(self, message: str) -> None:
-        """Log an info message with a newline before it"""
+        """Log an info message with a newline before it (dev-only)"""
 
         # Add a blank record first:
         if self._logger and hasattr(self._logger, 'handlers'):
@@ -191,28 +209,34 @@ class Logger:
         self._logger.info(message, stacklevel=2)
 
 
-    def warning(self, message: str) -> None:
-        """Log a warning message"""
+    def warning(self, message: str, target: str = "dev") -> None:
+        """Log a warning message with optional target routing"""
 
-        self._logger.warning(message, stacklevel=2)
-
-
-    def error(self, message: str) -> None:
-        """Log an error message"""
-
-        self._logger.error(message, stacklevel=2)
+        self._log_with_target("warning", message, target)
 
 
-    def critical(self, message: str) -> None:
-        """Log a critical message"""
+    def error(self, message: str, target: str = "dev") -> None:
+        """Log an error message with optional target routing"""
 
-        self._logger.critical(message, stacklevel=2)
+        self._log_with_target("error", message, target)
 
 
-    def exception(self, message: str) -> None:
+    def critical(self, message: str, target: str = "dev") -> None:
+        """Log a critical message with optional target routing"""
+
+        self._log_with_target("critical", message, target)
+
+
+    def exception(self, message: str, target: str = "dev") -> None:
         """Log an exception message with traceback"""
 
-        self._logger.exception(message, stacklevel=2)
+        if target == "dev":
+            # For dev-only, use built-in exception logging with automatic traceback:
+            self._logger.exception(message, stacklevel=2)
+        else:
+            # For user or both targets, manually format traceback and use _log_with_target:
+            full_message = f"{message}\n{traceback.format_exc()}"
+            self._log_with_target("error", full_message, target)
 
 
     def close_handlers(self) -> None:

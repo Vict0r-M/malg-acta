@@ -11,7 +11,12 @@ __pycache__/
 # C++:
 
 # Java:
+target/
+bin/
+.settings/
 
 # Other:
+idk.md
 idk.py
 examples/output/reports/
+.idea/
