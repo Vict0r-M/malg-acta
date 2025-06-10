@@ -159,6 +159,13 @@ def _validate_device_config(device_config: Dict[str, Any], device_name: str, ctx
         ctx.logger.error(error_msg)
         raise ctx.errors.ConfigurationError(error_msg)
 
+    # Validate retry_count for devices if present:
+    if 'retry_count' in device_config:
+        if not isinstance(device_config['retry_count'], int) or device_config['retry_count'] <= 0:
+            error_msg = f"devices.{device_name}.retry_count must be a positive integer"
+            ctx.logger.error(error_msg)
+            raise ctx.errors.ConfigurationError(error_msg)
+
 
 def _validate_devices(config: Box, ctx: Any) -> None:
     """Validate devices configuration section"""
@@ -202,6 +209,52 @@ def _validate_plugins(config: Box, ctx: Any) -> None:
         raise ctx.errors.ConfigurationError(error_msg)
 
 
+def _validate_input_method(config: Box, ctx: Any) -> None:
+    """Validate input method configuration"""
+
+    if 'input' not in config:
+        error_msg = "Missing required section: input"
+        ctx.logger.error(error_msg)
+        raise ctx.errors.ConfigurationError(error_msg)
+
+    input_config = config.input
+
+    if 'method' not in input_config:
+        error_msg = "input.method must be specified"
+        ctx.logger.error(error_msg)
+        raise ctx.errors.ConfigurationError(error_msg)
+
+    allowed_methods = ['gui', 'cli']
+    if input_config.method not in allowed_methods:
+        error_msg = f"input.method must be one of: {', '.join(allowed_methods)}"
+        ctx.logger.error(error_msg)
+        raise ctx.errors.ConfigurationError(error_msg)
+
+    # Validate retry_count for input if present:
+    if 'retry_count' in input_config:
+        if not isinstance(input_config.retry_count, int) or input_config.retry_count <= 0:
+            error_msg = "input.retry_count must be a positive integer"
+            ctx.logger.error(error_msg)
+            raise ctx.errors.ConfigurationError(error_msg)
+    else:
+        # Set default retry_count if not specified:
+        input_config.retry_count = 3
+        ctx.logger.info("input.retry_count not specified, using default value: 3")
+
+
+def _validate_input_logging_combination(config: Box, ctx: Any) -> None:
+    """Validate input method and logging combination to prevent console conflicts"""
+    
+    input_method = config.input.method
+    console_enabled = config.logging.console_enabled
+    
+    # Case 4: CLI input + console logging = conflict:
+    if input_method == "cli" and console_enabled:
+        error_msg = "Cannot use console logging (console_enabled=true) with CLI input method"
+        ctx.logger.error(error_msg)
+        raise ctx.errors.ConfigurationError(error_msg)
+
+
 def _validate_config(config: Box, ctx: Any) -> None:
     """Validate configuration parameters"""
 
@@ -213,6 +266,12 @@ def _validate_config(config: Box, ctx: Any) -> None:
     _validate_data_storage(config, ctx)
     _validate_devices(config, ctx)
     _validate_plugins(config, ctx)
+
+    # Validate input method configuration:
+    _validate_input_method(config, ctx)
+    
+    # Validate input/logging combination to prevent conflicts:
+    _validate_input_logging_combination(config, ctx)
 
 #%% Main Configuration Loading Function:
 
@@ -250,7 +309,7 @@ def load_config(config_path: Union[str, Path], ctx: Any) -> Box:
         _validate_config(config, ctx)
         return config
 
-    except ctx.errors.MalgActaError:
+    except ctx.errors.ApplicationError:
         raise
     except Exception as e:
         error_msg = f"Failed to load configuration: {str(e)}"

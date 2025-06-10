@@ -1,3 +1,4 @@
 # python==3.13.3
 
 Pydantic==2.11.5
+JPype1==1.5.2
