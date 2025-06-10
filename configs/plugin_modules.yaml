@@ -86,30 +86,3 @@ device_connection:
     module: "app_modules.device_connection.device_detector"
     class: "DeviceDetector"
     description: "Automatic device detection and identification"
-
-# State machine plugins - handle application flow control:
-states:
-  idle_state:
-    module: "app_modules.states.idle_state"
-    class: "IdleState"
-    description: "Idle waiting state"
-    
-  input_state:
-    module: "app_modules.states.input_state"
-    class: "InputState"
-    description: "User input collection state"
-    
-  acquisition_state:
-    module: "app_modules.states.acquisition_state"
-    class: "AcquisitionState"
-    description: "Data acquisition state"
-    
-  dissemination_state:
-    module: "app_modules.states.dissemination_state"
-    class: "DisseminationState"
-    description: "Report generation and printing state"
-    
-  error_state:
-    module: "app_modules.states.error_state"
-    class: "ErrorState"
-    description: "Error handling and recovery state"
