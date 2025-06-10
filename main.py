@@ -54,15 +54,19 @@ def load_state_modules(logger: Any) -> Tuple[Any, Any, Any, Any, Any]:
         sys.exit(1)
 
 
-def load_data_models(logger: Any) -> Tuple[Any]:
+def load_data_models(logger: Any) -> Tuple[Any, Any, Any, Any, Any]:
     """Import data model modules"""
 
     try:
         # Import data models:
         from app_modules.models.input_data import InputData
+        from app_modules.models.scale_data import ScaleData
+        from app_modules.models.press_data import PressData
+        from app_modules.models.specimen_data import SpecimenData
+        from app_modules.models.set_data import SetData
 
         logger.info("Successfully imported data models")
-        return (InputData,)
+        return (InputData, ScaleData, PressData, SpecimenData, SetData)
 
     except Exception as e:
         logger.critical(f"Failed to import data models: {str(e)}")
@@ -147,7 +151,12 @@ def create_state_instances(ctx: Any,
                            InputState: type, 
                            AcquisitionState: type,
                            DisseminationState: type, 
-                           ErrorState: type) -> Tuple[Any, Any, Any, Any, Any]:
+                           ErrorState: type,
+                           InputData: type,
+                           ScaleData: type,
+                           PressData: type,
+                           SpecimenData: type,
+                           SetData: type) -> Tuple[Any, Any, Any, Any, Any]:
     """Create all state instances with proper dependency injection"""
 
     try:
@@ -155,8 +164,8 @@ def create_state_instances(ctx: Any,
 
         # Create state instances with dependency injection:
         idle_state = IdleState()
-        input_state = InputState(input_interface)
-        acquisition_state = AcquisitionState()  # Mock implementation needs no dependencies
+        input_state = InputState(input_interface, InputData)
+        acquisition_state = AcquisitionState(ScaleData, PressData, SpecimenData, SetData)
         dissemination_state = DisseminationState()  # Mock implementation needs no dependencies
         error_state = ErrorState()
 
@@ -237,7 +246,7 @@ def main() -> None:
     IdleState, InputState, AcquisitionState, DisseminationState, ErrorState = load_state_modules(logger)
 
     # Load data models:
-    InputData, = load_data_models(logger)
+    InputData, ScaleData, PressData, SpecimenData, SetData = load_data_models(logger)
 
     # Load interface modules:
     InputInterface, = load_interface_modules(logger)
@@ -278,7 +287,8 @@ def main() -> None:
 
         # Create all state instances:
         idle_state, input_state, acquisition_state, dissemination_state, error_state = create_state_instances(
-            ctx, input_interface, IdleState, InputState, AcquisitionState, DisseminationState, ErrorState)
+            ctx, input_interface, IdleState, InputState, AcquisitionState, DisseminationState, ErrorState,
+            InputData, ScaleData, PressData, SpecimenData, SetData)
 
         # Initialize state machine:
         state_machine = initialize_state_machine(

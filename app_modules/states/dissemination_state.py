@@ -1,4 +1,4 @@
-"""Dissemination state - handles report generation and output (mock for 1.0.0)"""
+"""Dissemination state - handles report generation and output"""
 
 #%% Dependencies:
 

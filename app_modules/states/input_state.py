@@ -7,31 +7,22 @@ from typing import Any, Tuple
 #%% Input State:
 
 class InputState:
-    """
-    Input state: collects user testing parameters via input interface
-    Bridges between idle state and acquisition state with validated user data
-    """
+    """Bridges between idle state and acquisition state with validated user data"""
 
-    def __init__(self, input_interface: Any):
-        """
-        Initialize input state with injected input interface
-        Args:
-            input_interface: InputInterface instance for collecting user data
-        """
+    def __init__(self, input_interface: Any, input_data_class: type):
+
         self.input_interface = input_interface
+        self.input_data_class = input_data_class
         self.state_name = "input_state"
         self.input_data = None
 
+
     def enter(self, ctx: Any, data: Any = None) -> None:
-        """
-        Enter input state - prepare for user data collection
-        Args:
-            ctx: Context object
-            data: Optional data from previous state (could be pre-submitted GUI data)
-        """
+        """Enter input state - prepare for user data collection"""
+
         try:
             ctx.logger.info("Entering input state - ready for user data")
-            
+
             # Handle data from previous state:
             if data:
                 # If coming from idle state with pre-submitted GUI data:
@@ -41,7 +32,7 @@ class InputState:
                 # If coming from error state with recoverable error:
                 elif isinstance(data, dict) and data.get("retry_input"):
                     ctx.logger.info("Retrying input collection after error", target="user")
-                # If coming with pre-filled data (future enhancement):
+                # If coming with pre-filled data:
                 elif hasattr(data, 'protocol'):
                     ctx.logger.info("Resuming with partially filled data", target="user")
             else:
@@ -57,14 +48,11 @@ class InputState:
             ctx.logger.error(error_msg)
             raise ctx.errors.StateMachineError(error_msg)
 
-    def execute(self, ctx: Any) -> Tuple[str, Any]:
-        """
-        Execute input state logic - collect and validate user data
-        Args:
-            ctx: Context object
-        Returns:
-            Tuple: (next_state_name, validated_input_data)
-        """
+
+    def execute(self, ctx: Any        # Context object
+               ) -> Tuple[str, Any]:  # (next_state_name, validated_input_data)
+        """Execute input state logic - collect and validate user data"""
+
         try:
             ctx.logger.info("Starting user data collection")
 
@@ -73,7 +61,7 @@ class InputState:
                 ctx.logger.info("Using pre-submitted data from GUI")
                 raw_data = self._pre_submitted_data['data']
                 self._pre_submitted_data = None  # Clear it
-                
+
                 # Transform and validate the pre-submitted data:
                 input_method = ctx.config.input.method
                 if input_method == "gui":
@@ -83,10 +71,9 @@ class InputState:
                         'Rezistență la Compresiune Prisme': 'beam_compression_testing',
                         'Rezistență la Încovoiere Prisme': 'beam_flexural_testing'
                     })
-                    
+
                     # Create InputData instance:
-                    from app_modules.models.input_data import InputData
-                    self.input_data = InputData(**transformed_data)
+                    self.input_data = self.input_data_class(**transformed_data)
                 else:
                     # Fallback to normal collection
                     self.input_data = self.input_interface.get_user_input()
@@ -117,11 +104,7 @@ class InputState:
         except ctx.errors.DeviceError as e:
             # Handle device/interface errors - transition to error state:
             ctx.logger.error(f"Input interface error: {str(e)}")
-            return ("error_state", {
-                "error": e,
-                "source_state": "input_state",
-                "recoverable": True
-            })
+            return ("error_state", {"error": e, "source_state": "input_state", "recoverable": True})
 
         except KeyboardInterrupt:
             # Handle user cancellation - return to idle:
@@ -133,18 +116,12 @@ class InputState:
             # Handle unexpected errors:
             ctx.logger.exception(f"Unexpected error in input state: {str(e)}")
             error_obj = ctx.errors.StateMachineError(f"Input collection failed: {str(e)}")
-            return ("error_state", {
-                "error": error_obj,
-                "source_state": "input_state",
-                "recoverable": False
-            })
+            return ("error_state", {"error": error_obj, "source_state": "input_state", "recoverable": False})
+
 
     def exit(self, ctx: Any) -> None:
-        """
-        Exit input state
-        Args:
-            ctx: Context object
-        """
+        """Exit input state"""
+
         try:
             ctx.logger.info("Exiting input state")
 
@@ -155,15 +132,10 @@ class InputState:
         except Exception as e:
             ctx.logger.warning(f"Error exiting input state: {str(e)}")
 
+
     def can_transition_to(self, ctx: Any, target_state: str) -> bool:
-        """
-        Check if transition to target state is allowed from input state
-        Args:
-            ctx: Context object
-            target_state: Name of target state
-        Returns:
-            bool: True if transition is allowed
-        """
+        """Check if transition to target state is allowed from input state"""
+
         # From input state, we can go to:
         # - acquisition_state (normal flow with valid data)
         # - error_state (on errors)
@@ -172,13 +144,10 @@ class InputState:
         allowed_transitions = ["acquisition_state", "error_state", "idle_state", "input_state"]
         return target_state in allowed_transitions
 
+
     def _validate_protocol_requirements(self, ctx: Any, input_data: Any) -> None:
-        """
-        Validate protocol-specific requirements and constraints
-        Args:
-            ctx: Context object
-            input_data: User input data to validate
-        """
+        """Validate protocol-specific requirements and constraints"""
+
         try:
             protocol = input_data.protocol
 
@@ -203,36 +172,44 @@ class InputState:
             ctx.logger.error(error_msg)
             raise ctx.errors.ValidationError(error_msg)
 
+
     def _validate_cube_compression(self, ctx: Any, input_data: Any) -> None:
         """Validate cube compression testing requirements"""
-        # Cube compression uses both scale and press
+
+        # Cube compression uses both scale and press:
         if input_data.set_size > 20:  # Reasonable limit for cube testing
             raise ctx.errors.ValidationError("Cube compression: maximum 20 specimens per set")
         
         ctx.logger.info("Cube compression validation: requires scale and press measurements")
 
+
     def _validate_cube_frost(self, ctx: Any, input_data: Any) -> None:
         """Validate cube frost testing requirements"""
-        # Cube frost uses both scale and press, specimens must be in specific order
+
+        # Cube frost uses both scale and press, specimens must be in specific order:
         if input_data.set_size > 20:
             raise ctx.errors.ValidationError("Cube frost: maximum 20 specimens per set")
         
         ctx.logger.info("Cube frost validation: requires scale and press measurements in specific order")
 
+
     def _validate_beam_compression(self, ctx: Any, input_data: Any) -> None:
         """Validate beam compression testing requirements"""
-        # Beam compression uses press only, requires two measurements per specimen
+
+        # Beam compression uses press only, requires two measurements per specimen:
         if input_data.set_size > 10:  # Fewer beams since each needs two press measurements
             raise ctx.errors.ValidationError("Beam compression: maximum 10 specimens per set")
-        
+
         ctx.logger.info("Beam compression validation: requires two press measurements per specimen")
+
 
     def _validate_beam_flexural(self, ctx: Any, input_data: Any) -> None:
         """Validate beam flexural testing requirements"""
-        # Beam flexural uses press only, one measurement per specimen
+
+        # Beam flexural uses press only, one measurement per specimen:
         if input_data.set_size > 15:
             raise ctx.errors.ValidationError("Beam flexural: maximum 15 specimens per set")
-        
+
         ctx.logger.info("Beam flexural validation: requires one press measurement per specimen")
 
 #%%

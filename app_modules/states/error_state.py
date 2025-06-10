@@ -8,24 +8,21 @@ from typing import Any, Tuple
 #%% Error State:
 
 class ErrorState:
-    """
-    Error state: handles application errors and provides recovery options
-    Analyzes error types and guides user through recovery procedures
-    """
+    """Handles application errors and provides recovery options"""
 
     def __init__(self):
         """Initialize error state"""
+
         self.state_name = "error_state"
         self.error_info = None
         self.recovery_attempted = False
 
-    def enter(self, ctx: Any, data: Any = None) -> None:
-        """
-        Enter error state with error information
-        Args:
-            ctx: Context object
-            data: Dictionary containing error details from previous state
-        """
+
+    def enter(self, ctx: Any,   # Context object
+              data: Any = None  # Dictionary containing error details from previous state
+             ) -> None:
+        """Enter error state with error information"""
+
         try:
             ctx.logger.info("Entering error state - analyzing error")
 
@@ -57,17 +54,13 @@ class ErrorState:
 
         except Exception as e:
             error_msg = f"Critical error entering error state: {str(e)}"
-            ctx.logger.critical(error_msg)
-            # Can't raise here as we're already in error handling
+            ctx.logger.critical(error_msg)  # Can't raise here as we're already in error handling
 
-    def execute(self, ctx: Any) -> Tuple[str, Any]:
-        """
-        Execute error handling logic
-        Args:
-            ctx: Context object
-        Returns:
-            tuple: (next_state_name, recovery_data)
-        """
+
+    def execute(self, ctx: Any        # Context object
+               ) -> Tuple[str, Any]:  # (next_state_name, recovery_data)
+        """Execute error handling logic"""
+
         try:
             error = self.error_info.get("error")
             source_state = self.error_info.get("source_state")
@@ -81,7 +74,7 @@ class ErrorState:
                 if recovery_result["success"]:
                     return recovery_result["next_state"], recovery_result["data"]
                 else:
-                    # Recovery failed, fall through to manual handling
+                    # Recovery failed, fall through to manual handling:
                     ctx.logger.error("Automatic recovery failed", target="user")
 
             # Handle non-recoverable errors or failed recovery:
@@ -93,12 +86,10 @@ class ErrorState:
             ctx.logger.critical("Returning to idle state for safety", target="user")
             return ("idle_state", {"critical_error_recovery": True})
 
+
     def exit(self, ctx: Any) -> None:
-        """
-        Exit error state
-        Args:
-            ctx: Context object
-        """
+        """Exit error state"""
+
         try:
             ctx.logger.info("Exiting error state")
 
@@ -109,15 +100,10 @@ class ErrorState:
         except Exception as e:
             ctx.logger.warning(f"Error exiting error state: {str(e)}")
 
+
     def can_transition_to(self, ctx: Any, target_state: str) -> bool:
-        """
-        Check if transition to target state is allowed from error state
-        Args:
-            ctx: Context object
-            target_state: Name of target state
-        Returns:
-            bool: True if transition is allowed
-        """
+        """Check if transition to target state is allowed from error state"""
+
         # From error state, we can go to any state depending on recovery:
         # - idle_state (most common recovery)
         # - input_state (retry input collection)
@@ -125,16 +111,13 @@ class ErrorState:
         allowed_transitions = ["idle_state", "input_state", "acquisition_state"]
         return target_state in allowed_transitions
 
-    def _get_user_friendly_message(self, ctx: Any, error: Any, source_state: str) -> str:
-        """
-        Convert technical error to user-friendly message
-        Args:
-            ctx: Context object
-            error: Error object
-            source_state: State where error occurred
-        Returns:
-            str: User-friendly error message
-        """
+
+    def _get_user_friendly_message(self, ctx: Any,    # Context object
+                                   error: Any,        # Error object
+                                   source_state: str  # State where error occurred
+                                  ) -> str:           # User-friendly error message
+        """Convert technical error to user-friendly message"""
+
         try:
             error_type = error.__class__.__name__ if hasattr(error, '__class__') else str(type(error))
             error_msg = str(error)
@@ -159,16 +142,13 @@ class ErrorState:
         except Exception:
             return f"Eroare neașteptată în {source_state}"
 
-    def _attempt_recovery(self, ctx: Any, error: Any, source_state: str) -> dict:
-        """
-        Attempt automatic recovery based on error type
-        Args:
-            ctx: Context object
-            error: Error object
-            source_state: State where error occurred
-        Returns:
-            dict: Recovery result with success status and next action
-        """
+
+    def _attempt_recovery(self, ctx: Any,    # Context object
+                          error: Any,        # Error object
+                          source_state: str  # State where error occurred
+                         ) -> dict:          # Recovery result with success status and next action
+        """Attempt automatic recovery based on error type"""
+
         try:
             error_type = error.__class__.__name__ if hasattr(error, '__class__') else str(type(error))
             error_msg = str(error)
@@ -190,8 +170,10 @@ class ErrorState:
             ctx.logger.error(f"Recovery attempt failed: {str(e)}")
             return {"success": False, "reason": f"Recovery attempt failed: {str(e)}"}
 
+
     def _recover_device_error(self, ctx: Any, error_msg: str, source_state: str) -> dict:
         """Recover from device connection errors"""
+
         try:
             ctx.logger.info("Attempting device recovery...", target="user")
 
@@ -202,48 +184,46 @@ class ErrorState:
                 ctx.logger.info("Verificați conexiunea cântarului și încercați din nou", target="user")
                 # For 1.0.0, assume scale recovers automatically:
                 ctx.logger.info("Cântarul a fost reconectat", target="user")
-                return {
-                    "success": True,
-                    "next_state": source_state,  # Return to source state
-                    "data": {"device_recovered": True}
-                }
+                return {"success": True,
+                        "next_state": source_state,  # Return to source state
+                        "data": {"device_recovered": True}}
 
             elif "press" in error_msg.lower():
                 ctx.logger.info("Verificați conexiunea presei și încercați din nou", target="user")
                 # For 1.0.0, assume press recovers automatically:
                 ctx.logger.info("Presa a fost reconectată", target="user")
-                return {
-                    "success": True,
-                    "next_state": source_state,  # Return to source state
-                    "data": {"device_recovered": True}
-                }
+                return {"success": True,
+                        "next_state": source_state,  # Return to source state
+                        "data": {"device_recovered": True}}
 
             return {"success": False, "reason": "Unknown device error"}
 
         except Exception as e:
             return {"success": False, "reason": f"Device recovery failed: {str(e)}"}
 
+
     def _recover_validation_error(self, ctx: Any, error_msg: str, source_state: str) -> dict:
         """Recover from validation errors"""
+
         try:
             ctx.logger.info("Validation error recovery", target="user")
 
             if source_state == "input_state":
                 # Return to input state for data correction:
                 ctx.logger.info("Vă rugăm să corectați datele introduse", target="user")
-                return {
-                    "success": True,
-                    "next_state": "input_state",
-                    "data": {"retry_input": True, "validation_error": error_msg}
-                }
+                return {"success": True,
+                        "next_state": "input_state",
+                        "data": {"retry_input": True, "validation_error": error_msg}}
 
             return {"success": False, "reason": "Cannot recover validation error from this state"}
 
         except Exception as e:
             return {"success": False, "reason": f"Validation recovery failed: {str(e)}"}
 
+
     def _recover_configuration_error(self, ctx: Any, error_msg: str, source_state: str) -> dict:
         """Recover from configuration errors"""
+
         try:
             # Configuration errors usually require manual intervention:
             ctx.logger.error("Eroare de configurare - contactați administratorul", target="user")
@@ -252,16 +232,13 @@ class ErrorState:
         except Exception as e:
             return {"success": False, "reason": f"Configuration recovery failed: {str(e)}"}
 
-    def _handle_manual_recovery(self, ctx: Any, error: Any, source_state: str) -> Tuple[str, Any]:
-        """
-        Handle errors that require manual intervention
-        Args:
-            ctx: Context object
-            error: Error object
-            source_state: State where error occurred
-        Returns:
-            tuple: (next_state_name, recovery_data)
-        """
+
+    def _handle_manual_recovery(self, ctx: Any,       # Context object
+                                error: Any,           # Error object
+                                source_state: str     # State where error occurred
+                               ) -> Tuple[str, Any]:  # (next_state_name, recovery_data)
+        """Handle errors that require manual intervention"""
+
         try:
             ctx.logger.error("Intervenție manuală necesară", target="user")
 

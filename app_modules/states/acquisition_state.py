@@ -1,4 +1,4 @@
-"""Acquisition state - handles data collection from devices (mock implementation for 1.0.0)"""
+"""Acquisition state - handles data collection from devices (mock implementation)"""
 
 #%% Dependencies:
 
@@ -9,26 +9,32 @@ from typing import Any, Tuple
 #%% Acquisition State:
 
 class AcquisitionState:
-    """
-    Acquisition state: coordinates device communication and data collection
-    Mock implementation for 1.0.0 - simulates realistic device behavior
-    """
+    """Acquisition state: coordinates device communication and data collection"""
 
-    def __init__(self):
+    def __init__(self, scale_data_class: type,  # ScaleData
+                 press_data_class: type,        # PressData
+                 specimen_data_class: type,     # SpecimenData
+                 set_data_class: type):         # SetData
         """Initialize acquisition state"""
+
         self.state_name = "acquisition_state"
         self.input_data = None
         self.current_set = None
         self.current_specimen_index = 0
         self.protocol_handler = None
 
-    def enter(self, ctx: Any, data: Any = None) -> None:
-        """
-        Enter acquisition state with validated input data
-        Args:
-            ctx: Context object
-            data: InputData instance from input_state
-        """
+        # Store injected data model classes:
+        self.scale_data_class = scale_data_class
+        self.press_data_class = press_data_class
+        self.specimen_data_class = specimen_data_class
+        self.set_data_class = set_data_class
+
+
+    def enter(self, ctx: Any,   # Context object
+              data: Any = None  # InputData instance from input_state
+             ) -> None:
+        """Enter acquisition state with validated input data"""
+
         try:
             ctx.logger.info("Entering acquisition state - preparing for testing")
 
@@ -53,14 +59,10 @@ class AcquisitionState:
             ctx.logger.error(error_msg)
             raise ctx.errors.StateMachineError(error_msg)
 
-    def execute(self, ctx: Any) -> Tuple[str, Any]:
-        """
-        Execute acquisition logic - collect data for all specimens
-        Args:
-            ctx: Context object
-        Returns:
-            tuple: (next_state_name, complete_set_data)
-        """
+
+    def execute(self, ctx: Any) -> Tuple[str, Any]:  # (next_state_name, complete_set_data)
+        """Execute acquisition logic - collect data for all specimens"""
+
         try:
             ctx.logger.info("Starting specimen data collection")
 
@@ -68,12 +70,13 @@ class AcquisitionState:
             while self.current_specimen_index < self.input_data.set_size:
                 specimen_number = self.current_specimen_index + 1
 
-                ctx.logger.info(f"Processing specimen {specimen_number}/{self.input_data.set_size}", target="user")
+                ctx.logger.info(f"Processing specimen {specimen_number}/{self.input_data.set_size}", 
+                                target="user")
 
                 # Collect data for current specimen using protocol handler:
-                specimen_data = self.protocol_handler.collect_specimen_data(
-                    ctx, specimen_number, self.current_specimen_index
-                )
+                specimen_data = self.protocol_handler.collect_specimen_data(ctx, 
+                                                                            specimen_number, 
+                                                                            self.current_specimen_index)
 
                 # Add specimen to set:
                 self.current_set.add_specimen(ctx, specimen_data)
@@ -93,12 +96,10 @@ class AcquisitionState:
         except ctx.errors.DeviceError as e:
             # Handle device errors - transition to error state:
             ctx.logger.error(f"Device error during acquisition: {str(e)}", target="both")
-            return ("error_state", {
-                "error": e,
-                "source_state": "acquisition_state",
-                "partial_data": self.current_set,
-                "recoverable": True
-            })
+            return ("error_state", {"error": e,
+                                    "source_state": "acquisition_state",
+                                    "partial_data": self.current_set,
+                                    "recoverable": True})
 
         except KeyboardInterrupt:
             # Handle user interruption:
@@ -110,19 +111,15 @@ class AcquisitionState:
             # Handle unexpected errors:
             ctx.logger.exception(f"Unexpected error during acquisition: {str(e)}")
             error_obj = ctx.errors.StateMachineError(f"Data acquisition failed: {str(e)}")
-            return ("error_state", {
-                "error": error_obj,
-                "source_state": "acquisition_state",
-                "partial_data": self.current_set,
-                "recoverable": False
-            })
+            return ("error_state", {"error": error_obj,
+                                    "source_state": "acquisition_state",
+                                    "partial_data": self.current_set,
+                                    "recoverable": False})
+
 
     def exit(self, ctx: Any) -> None:
-        """
-        Exit acquisition state
-        Args:
-            ctx: Context object
-        """
+        """Exit acquisition state"""
+
         try:
             ctx.logger.info("Exiting acquisition state")
 
@@ -133,15 +130,10 @@ class AcquisitionState:
         except Exception as e:
             ctx.logger.warning(f"Error exiting acquisition state: {str(e)}")
 
+
     def can_transition_to(self, ctx: Any, target_state: str) -> bool:
-        """
-        Check if transition to target state is allowed from acquisition
-        Args:
-            ctx: Context object
-            target_state: Name of target state
-        Returns:
-            bool: True if transition is allowed
-        """
+        """Check if transition to target state is allowed from acquisition"""
+
         # From acquisition state, we can go to:
         # - dissemination_state (normal completion)
         # - error_state (on errors)
@@ -149,19 +141,16 @@ class AcquisitionState:
         allowed_transitions = ["dissemination_state", "error_state", "idle_state"]
         return target_state in allowed_transitions
 
-    def _create_set_data(self, ctx: Any, input_data: Any) -> Any:
-        """
-        Create SetData instance with input data
-        Args:
-            ctx: Context object
-            input_data: Validated input data
-        Returns:
-            SetData instance
-        """
+
+    def _create_set_data(self, ctx: Any,  # Context object
+                         input_data: Any  # Validated input data
+                        ) -> Any:         # SetData instance
+        """Create SetData instance with input data"""
+
         try:
             # Import SetData model:
             from app_modules.models.set_data import SetData
-            
+
             set_data = SetData(input_data=input_data)
             ctx.logger.info(f"Created set data structure for {input_data.set_size} specimens")
             return set_data
@@ -171,24 +160,31 @@ class AcquisitionState:
             ctx.logger.error(error_msg)
             raise ctx.errors.StateMachineError(error_msg)
 
-    def _get_protocol_handler(self, ctx: Any, protocol: str) -> Any:
-        """
-        Get protocol-specific handler for data collection
-        Args:
-            ctx: Context object
-            protocol: Protocol name
-        Returns:
-            Protocol handler instance
-        """
+
+    def _get_protocol_handler(self, ctx: Any, protocol: str) -> Any:  # Protocol handler instance
+        """Get protocol-specific handler for data collection"""
+
         try:
             if protocol == "cube_compression_testing":
-                return CubeCompressionHandler()
+                return CubeCompressionHandler(self.scale_data_class, 
+                                              self.press_data_class, 
+                                              self.specimen_data_class)
+
             elif protocol == "cube_frost_testing":
-                return CubeFrostHandler()
+                return CubeFrostHandler(self.scale_data_class, 
+                                        self.press_data_class, 
+                                        self.specimen_data_class)
+
             elif protocol == "beam_compression_testing":
-                return BeamCompressionHandler()
+                return BeamCompressionHandler(self.scale_data_class, 
+                                              self.press_data_class, 
+                                              self.specimen_data_class)
+
             elif protocol == "beam_flexural_testing":
-                return BeamFlexuralHandler()
+                return BeamFlexuralHandler(self.scale_data_class, 
+                                           self.press_data_class, 
+                                           self.specimen_data_class)
+
             else:
                 raise ctx.errors.ProtocolError(f"Unknown protocol: {protocol}")
 
@@ -203,9 +199,17 @@ class AcquisitionState:
 class MockProtocolHandler:
     """Base class for mock protocol handlers"""
 
+    def __init__(self, scale_data_class: type,  # ScaleData
+                 press_data_class: type,        # PressData
+                 specimen_data_class: type):    # SpecimenData
+
+        self.ScaleData = scale_data_class
+        self.PressData = press_data_class
+        self.SpecimenData = specimen_data_class
+
+
     def simulate_scale_reading(self, ctx: Any, specimen_number: int) -> Any:
         """Simulate scale measurement"""
-        from app_modules.models.scale_data import ScaleData
         
         # Simulate realistic mass readings (2-8 kg range for concrete specimens):
         mass = random.uniform(2.5, 7.8)
@@ -214,23 +218,24 @@ class MockProtocolHandler:
         time.sleep(1)  # Simulate reading time
         ctx.logger.info(f"Scale reading: {mass:.1f} kg", target="user")
         
-        return ScaleData(mass=mass, mass_decimals=1, mass_unit="kg")
+        return self.ScaleData(mass=mass, mass_decimals=1, mass_unit="kg")
 
-    def simulate_press_reading(self, ctx: Any, specimen_number: int, measurement_type: str = "single") -> Any:
+
+    def simulate_press_reading(self, ctx: Any, 
+                               specimen_number: int, 
+                               measurement_type: str = "single") -> Any:
         """Simulate press measurement"""
-        from app_modules.models.press_data import PressData
         
-        # Simulate realistic concrete strength readings:
-        # Typical range: 20-60 N/mm² for concrete
+        # Simulate concrete strength readings:
         strength = random.uniform(25.0, 55.0)
-        # Convert to load (assuming 150mm x 150mm specimen = 22500 mm²):
+        # Convert to load (assuming 150mm x 150mm specimen = 22500 mm^2):
         load = strength * 22500  # Load in N
         
         ctx.logger.info(f"Place specimen {specimen_number} in press ({measurement_type})", target="user")
         time.sleep(2)  # Simulate test time
         ctx.logger.info(f"Press reading: {load:.0f} N ({strength:.2f} N/mm²)", target="user")
         
-        return PressData(load=load, strength=strength, load_decimals=0, strength_decimals=2)
+        return self.PressData(load=load, strength=strength, load_decimals=0, strength_decimals=2)
 
 
 class CubeCompressionHandler(MockProtocolHandler):
@@ -238,7 +243,6 @@ class CubeCompressionHandler(MockProtocolHandler):
 
     def collect_specimen_data(self, ctx: Any, specimen_number: int, index: int) -> Any:
         """Collect scale and press data for cube compression"""
-        from app_modules.models.specimen_data import SpecimenData
         
         ctx.logger.info(f"Cube compression test - specimen {specimen_number}")
         
@@ -248,7 +252,7 @@ class CubeCompressionHandler(MockProtocolHandler):
         # Collect press data:
         press_data = self.simulate_press_reading(ctx, specimen_number, "compression")
         
-        return SpecimenData(scale_data=scale_data, press_data=press_data)
+        return self.SpecimenData(scale_data=scale_data, press_data=press_data)
 
 
 class CubeFrostHandler(MockProtocolHandler):
@@ -256,7 +260,6 @@ class CubeFrostHandler(MockProtocolHandler):
 
     def collect_specimen_data(self, ctx: Any, specimen_number: int, index: int) -> Any:
         """Collect scale and press data for cube frost testing"""
-        from app_modules.models.specimen_data import SpecimenData
         
         ctx.logger.info(f"Cube frost test - specimen {specimen_number} (order matters!)", target="user")
         
@@ -266,7 +269,7 @@ class CubeFrostHandler(MockProtocolHandler):
         # Collect press data:
         press_data = self.simulate_press_reading(ctx, specimen_number, "frost resistance")
         
-        return SpecimenData(scale_data=scale_data, press_data=press_data)
+        return self.SpecimenData(scale_data=scale_data, press_data=press_data)
 
 
 class BeamCompressionHandler(MockProtocolHandler):
@@ -274,7 +277,6 @@ class BeamCompressionHandler(MockProtocolHandler):
 
     def collect_specimen_data(self, ctx: Any, specimen_number: int, index: int) -> Any:
         """Collect two press measurements for beam compression"""
-        from app_modules.models.specimen_data import SpecimenData
         
         ctx.logger.info(f"Beam compression test - specimen {specimen_number} (2 measurements)")
         
@@ -292,7 +294,7 @@ class BeamCompressionHandler(MockProtocolHandler):
         else:
             press_data = press_data_2
         
-        return SpecimenData(scale_data=None, press_data=press_data)
+        return self.SpecimenData(scale_data=None, press_data=press_data)
 
 
 class BeamFlexuralHandler(MockProtocolHandler):
@@ -300,7 +302,6 @@ class BeamFlexuralHandler(MockProtocolHandler):
 
     def collect_specimen_data(self, ctx: Any, specimen_number: int, index: int) -> Any:
         """Collect single press measurement for beam flexural"""
-        from app_modules.models.specimen_data import SpecimenData
         
         ctx.logger.info(f"Beam flexural test - specimen {specimen_number}")
         
@@ -309,6 +310,6 @@ class BeamFlexuralHandler(MockProtocolHandler):
         # Single press measurement:
         press_data = self.simulate_press_reading(ctx, specimen_number, "flexural")
         
-        return SpecimenData(scale_data=None, press_data=press_data)
+        return self.SpecimenData(scale_data=None, press_data=press_data)
 
 #%%
