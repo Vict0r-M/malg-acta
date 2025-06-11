@@ -5,7 +5,6 @@
 import time
 import queue
 from pathlib import Path
-from datetime import datetime
 from typing import Any, Optional
 
 import jpype
@@ -27,11 +26,12 @@ class CLIBridge:
 
         self.session_active = False
         self.interface_locked = False
+        self.continue_testing = True  # Flag to control testing continuation
 
 
     def setup(self, ctx: Any) -> None:
         """Setup CLI bridge with context and initialize Java CLI application"""
-        
+
         self.ctx = ctx
 
         try:
@@ -45,6 +45,7 @@ class CLIBridge:
 
             # Mark session as active:
             self.session_active = True
+            self.continue_testing = True
 
             self.ctx.logger.info("CLI bridge setup completed successfully")
 
@@ -77,7 +78,7 @@ class CLIBridge:
             result = self._run_cli_interactive()
 
             if not result:
-                error_msg = "CLI input failed or was cancelled by user"
+                error_msg = "CLI input was cancelled by user"
                 self.ctx.logger.error(error_msg)
                 raise self.ctx.errors.ValidationError(error_msg)
 
@@ -112,20 +113,22 @@ class CLIBridge:
             self.ctx.logger.info("Unlocking CLI interface...")
 
             # Ask user whether to continue or exit:
-            continue_testing = self._ask_continue_or_exit()
+            continue_choice = self._ask_continue_or_exit()
 
-            if continue_testing:
+            if continue_choice:
                 self.interface_locked = False
+                self.continue_testing = True
                 self.ctx.logger.info("Ready for next testing cycle", target="user")
             else:
                 self.ctx.logger.info("User chose to exit application", target="user")
                 self.session_active = False
-                # Trigger application shutdown (this should be handled by main.py):
-                self.ctx.logger.info("Application will now exit")
+                self.continue_testing = False
 
         except Exception as e:
             error_msg = f"Failed to unlock CLI interface: {str(e)}"
             self.ctx.logger.error(error_msg)
+            self.session_active = False
+            self.continue_testing = False
             raise self.ctx.errors.DeviceError(error_msg)
 
 
@@ -155,7 +158,9 @@ class CLIBridge:
     def _start_jvm(self) -> None:
         """Start JVM with proper classpath for CLI application"""
 
-        if self.jvm_started:
+        if jpype.isJVMStarted():
+            self.jvm_started = True
+            self.ctx.logger.info("JVM already started, skipping CLI JVM initialization")
             return
 
         try:
@@ -164,7 +169,7 @@ class CLIBridge:
 
             # Use the fat JAR that includes all dependencies:
             fat_jar_path = cli_app_path / "target" / "cli-app-0.0.1-SNAPSHOT-jar-with-dependencies.jar"
-            
+
             if not fat_jar_path.exists():
                 error_msg = f"Fat JAR not found at {fat_jar_path}. Please run 'mvn package' first."
                 self.ctx.logger.error(error_msg)
@@ -220,9 +225,6 @@ class CLIBridge:
 
         try:
             self.ctx.logger.info("Starting Java CLI application...")
-
-            # Call the new collectUserInput method that returns DataClassCLI object directly:
-            # This call will block until user completes all input:
             java_data_object = self.java_input_class.collectUserInput()
 
             if java_data_object is None:
@@ -244,7 +246,7 @@ class CLIBridge:
 
     def _convert_java_object_to_dict(self, java_data_object) -> dict:
         """Convert Java DataClassCLI object to Python dictionary using JPype"""
-        
+
         try:
             # Extract data from Java object using getter methods:
             python_data = {
@@ -278,18 +280,18 @@ class CLIBridge:
 
     def _convert_java_list_to_python(self, java_list) -> list:
         """Convert Java List to Python list"""
-        
+
         try:
             if java_list is None:
                 return []
-            
+
             # Convert Java list to Python list:
             python_list = []
             for i in range(java_list.size()):
                 python_list.append(str(java_list.get(i)))
-            
+
             return python_list
-            
+
         except Exception as e:
             self.ctx.logger.warning(f"Failed to convert Java list: {str(e)}")
             return []
@@ -303,7 +305,7 @@ class CLIBridge:
             print("   TESTING IN PROGRESS...")
             print("   Please follow the instructions displayed below.")
             print("="*50 + "\n")
-            
+
         except Exception as e:
             # Don't raise error for status display - it's not critical:
             self.ctx.logger.warning(f"Failed to show testing status: {str(e)}")
@@ -352,9 +354,15 @@ class CLIBridge:
 
 
     def is_session_active(self) -> bool:
-        """Check if CLI session is still active"""
+        """Check if CLI session is still active and user wants to continue"""
 
-        return self.session_active
+        return self.session_active and self.continue_testing
+
+
+    def wants_to_continue(self) -> bool:
+        """Check if user wants to continue testing"""
+
+        return self.continue_testing
 
 
     def __enter__(self):

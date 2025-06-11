@@ -20,7 +20,7 @@ class GUIBridge:
 
     def __init__(self):
         """Initialize GUI bridge with default state"""
-        
+
         self.ctx = None
         self.data_queue = queue.Queue()
         self.app_instance = None
@@ -28,8 +28,7 @@ class GUIBridge:
         self.jvm_started = False
 
 
-
-    def setup(self, ctx: Any) -> None:  # Context object containing logger, config, errors, typing
+    def setup(self, ctx: Any) -> None:
         """Setup GUI bridge with malg-acta context and initialize JavaFX application"""
 
         self.ctx = ctx
@@ -92,7 +91,7 @@ class GUIBridge:
                         return submitted_data['data']
 
                     except queue.Empty:
-                        continue  # Continue waiting for input:
+                        continue  # Continue waiting for input
 
                 except KeyboardInterrupt:
                     error_msg = "User interrupted GUI input"
@@ -120,10 +119,7 @@ class GUIBridge:
             raise self.ctx.errors.DeviceError(error_msg)
 
 
-    def log_to_gui(self, level: str,      # Log level (INFO, WARNING, ERROR, etc.)
-                   message: str,          # Message to log
-                   timestamp: str = None  # Optional timestamp (uses current time if None)
-                  ) -> None:
+    def log_to_gui(self, level: str, message: str, timestamp: str = None) -> None:
         """Log a message to the GUI logger panel"""
 
         try:
@@ -151,11 +147,7 @@ class GUIBridge:
                 self.app_instance.closeApplication()
                 self.app_instance = None
 
-            # Shutdown JVM:
-            if self.jvm_started and jpype.isJVMStarted():
-                jpype.shutdownJVM()
-                self.jvm_started = False
-
+            # Note: Don't shutdown JVM here since it's shared with other components:
             if self.ctx:
                 self.ctx.logger.info("GUI bridge shutdown completed")
 
@@ -167,8 +159,16 @@ class GUIBridge:
     def _start_jvm(self) -> None:
         """Start JVM with proper classpath and JavaFX module configuration"""
 
-        if self.jvm_started:
+        if jpype.isJVMStarted():
+            self.jvm_started = True
+            self.ctx.logger.info("JVM already started, skipping GUI JVM initialization")
+
+            # Verify that GUI classes are available:
+            self._verify_gui_classes()
             return
+
+        # This should not happen with unified JVM startup, but handle it gracefully:
+        self.ctx.logger.warning("JVM not started - this should not happen with unified startup")
 
         try:
             # Determine paths relative to malg-acta project root:
@@ -189,13 +189,10 @@ class GUIBridge:
             for attempt in range(retry_count):
                 try:
                     # Start JVM with JavaFX module configuration:
-                    jpype.startJVM(# JVM arguments come first (positional):
-                                   "-Djava.awt.headless=false",  # Ensure GUI mode
+                    jpype.startJVM("-Djava.awt.headless=false",  # Ensure GUI mode
                                    f"--module-path={module_path}",
                                    "--add-modules=javafx.controls", 
-                                   # Suppress JavaFX warnings on newer Java versions:
                                    "--add-exports=javafx.graphics/com.sun.javafx.application=ALL-UNNAMED",
-                                   # Keyword arguments come last:
                                    classpath=classpath)
 
                     self.jvm_started = True
@@ -212,6 +209,19 @@ class GUIBridge:
             error_msg = f"Failed to start JVM with JavaFX: {str(e)}"
             self.ctx.logger.error(error_msg)
             raise self.ctx.errors.DeviceError(error_msg)
+
+
+    def _verify_gui_classes(self) -> None:
+        """Verify that GUI classes are available in the current JVM"""
+
+        try:
+            # Try to load the main GUI class to verify it's in the classpath:
+            jpype.JClass("com.malg_acta.gui_app.AppController")
+            self.ctx.logger.info("Verified GUI class availability: AppController")
+            
+        except Exception as e:
+            self.ctx.logger.warning(f"GUI class AppController not available: {str(e)}")
+            self.ctx.logger.warning("GUI functionality may not work properly")
 
 
     def _launch_gui(self) -> None:
@@ -232,8 +242,7 @@ class GUIBridge:
             max_wait_time = retry_count * 2  # 2 seconds per retry
 
             for attempt in range(max_wait_time):
-                self.ctx.logger.info(f"Waiting for GUI instance creation... "
-                                      "(attempt {attempt + 1}/{max_wait_time})")
+                self.ctx.logger.info(f"Waiting for GUI instance creation... (attempt {attempt + 1}/{max_wait_time})")
                 time.sleep(1)
 
                 self.app_instance = AppController.getInstance()
@@ -251,13 +260,13 @@ class GUIBridge:
                 time.sleep(1)
                 try:
                     if self.app_instance.isRunning():
-                        self.ctx.logger.info(f"GUI application started successfully, isRunning() = True")
+                        self.ctx.logger.info("GUI application started successfully, isRunning() = True")
                         return  # Success - GUI is fully running
                 except Exception as e:
                     self.ctx.logger.warning(f"Error checking GUI running status: {str(e)}")
                     continue
 
-            # GUI instance exists but not running - warn but don't fail
+            # GUI instance exists but not running - warn but don't fail:
             self.ctx.logger.warning("GUI instance created but not running after 5 seconds")
             try:
                 is_running = self.app_instance.isRunning()
@@ -269,7 +278,6 @@ class GUIBridge:
             error_msg = f"Failed to launch GUI: {str(e)}"
             self.ctx.logger.error(error_msg)
             raise self.ctx.errors.DeviceError(error_msg)
-
 
     def _setup_callback(self) -> None:
         """Setup data submission callback with the Java application"""

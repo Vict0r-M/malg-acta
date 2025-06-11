@@ -12,17 +12,6 @@ input:
     class: "CLIBridge"
     description: "Java CLI input strategy using JPype1"
 
-# Acquisition plugins - handle device communication and data collection:
-acquisition:
-  scale:
-    module: "app_modules.acquisition.scale_plugin"
-    class: "ScalePlugin"
-    description: "Serial communication with weighing scale"
-    
-  press:
-    module: "app_modules.acquisition.press_plugin"
-    class: "PressPlugin"
-    description: "Serial communication with compression press"
 
 # Output plugins - handle report generation and printing:
 output:
@@ -35,54 +24,3 @@ output:
     module: "app_modules.output.printing.printer_plugin"
     class: "PrinterPlugin"
     description: "Receipt printing to physical printer"
-
-# Protocol plugins - handle specific testing protocols:
-protocols:
-  cube_compression:
-    module: "app_modules.protocols.cube_compression"
-    class: "CubeCompressionProtocol"
-    description: "Cube compression testing protocol"
-    
-  cube_frost:
-    module: "app_modules.protocols.cube_frost"
-    class: "CubeFrostProtocol"
-    description: "Cube frost resistance testing protocol"
-    
-  beam_compression:
-    module: "app_modules.protocols.beam_compression"
-    class: "BeamCompressionProtocol"
-    description: "Beam compression testing protocol"
-    
-  beam_flexural:
-    module: "app_modules.protocols.beam_flexural"
-    class: "BeamFlexuralProtocol"
-    description: "Beam flexural testing protocol"
-
-# Data storage plugins - handle persistent data management:
-data_storage:
-  clients_manager:
-    module: "app_modules.data_storage.clients_manager"
-    class: "ClientsManager"
-    description: "Client data management with JSON persistence"
-    
-  concrete_classes_manager:
-    module: "app_modules.data_storage.concrete_classes_manager"
-    class: "ConcreteClassesManager"
-    description: "Concrete classes management with JSON persistence"
-    
-  registry_manager:
-    module: "app_modules.data_storage.registry_manager"
-    class: "RegistryManager"
-    description: "Testing registry and history management"
-
-# Device connection plugins - handle device detection and communication:
-device_connection:
-  serial_manager:
-    module: "app_modules.device_connection.serial_manager"
-    class: "SerialManager"
-    description: "Serial port connection management"
-    
-  device_detector:
-    module: "app_modules.device_connection.device_detector"
-    class: "DeviceDetector"
-    description: "Automatic device detection and identification"

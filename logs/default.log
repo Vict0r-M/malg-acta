@@ -1,128 +1,212 @@
-10.06.2025 23:40:12 - INFO - main.py:235 - Malg-ACTA starting...
-10.06.2025 23:40:12 - INFO - main.py:30 - Successfully imported required modules
-10.06.2025 23:40:12 - INFO - main.py:49 - Successfully imported all state modules
-10.06.2025 23:40:13 - INFO - main.py:68 - Successfully imported data models
-10.06.2025 23:40:13 - INFO - main.py:83 - Successfully imported interface modules
-10.06.2025 23:40:13 - INFO - main.py:271 - Configuration file configs\app_config.yaml loaded and validated
-10.06.2025 23:40:13 - INFO - main.py:276 - Logger configured with final settings
+11.06.2025 16:32:51 - INFO - main.py:340 - Malg-ACTA starting...
+11.06.2025 16:32:51 - INFO - main.py:123 - Successfully imported required modules
+11.06.2025 16:32:51 - INFO - main.py:141 - Successfully imported all state modules
+11.06.2025 16:32:51 - INFO - main.py:159 - Successfully imported data models
+11.06.2025 16:32:51 - INFO - main.py:174 - Successfully imported interface modules
+11.06.2025 16:32:51 - INFO - main.py:376 - Configuration file configs\app_config.yaml loaded and validated
+11.06.2025 16:32:51 - INFO - main.py:381 - Logger configured with final settings
 
-10.06.2025 23:40:13 - INFO - main.py:277 - Initialization complete
-10.06.2025 23:40:13 - INFO - main.py:280 - Malg-ACTA system initialization starting...
-10.06.2025 23:40:13 - INFO - main.py:108 - Initializing plugin manager...
-10.06.2025 23:40:13 - INFO - plugin_manager.py:42 - Plugin configuration processed successfully
-10.06.2025 23:40:13 - INFO - plugin_manager.py:57 - Plugin category 'input': 2 plugins available
-10.06.2025 23:40:13 - INFO - plugin_manager.py:57 - Plugin category 'acquisition': 2 plugins available
-10.06.2025 23:40:13 - INFO - plugin_manager.py:57 - Plugin category 'output': 2 plugins available
-10.06.2025 23:40:13 - INFO - plugin_manager.py:57 - Plugin category 'protocols': 4 plugins available
-10.06.2025 23:40:13 - INFO - plugin_manager.py:57 - Plugin category 'data_storage': 3 plugins available
-10.06.2025 23:40:13 - INFO - plugin_manager.py:57 - Plugin category 'device_connection': 2 plugins available
-10.06.2025 23:40:13 - INFO - plugin_manager.py:29 - PluginManager initialized with 6 plugin categories
-10.06.2025 23:40:13 - INFO - main.py:121 - Plugin manager initialized successfully
-10.06.2025 23:40:13 - INFO - main.py:134 - Initializing input interface...
-10.06.2025 23:40:13 - INFO - plugin_manager.py:90 - Loading strategy: input.cli
-10.06.2025 23:40:13 - INFO - plugin_manager.py:148 - Importing plugin: app_modules.input.cli.cli_bridge.CLIBridge
-10.06.2025 23:40:13 - INFO - plugin_manager.py:157 - Plugin class loaded successfully: input.cli
-10.06.2025 23:40:13 - INFO - plugin_manager.py:110 - Strategy input.cli loaded successfully
-10.06.2025 23:40:13 - INFO - cli_bridge.py:38 - Setting up CLI bridge...
-10.06.2025 23:40:13 - INFO - cli_bridge.py:175 - Starting JVM with classpath: ['C:\\Users\\V\\Projects\\malg-acta\\app_modules\\input\\cli\\cli-app\\target\\cli-app-0.0.1-SNAPSHOT-jar-with-dependencies.jar']
-10.06.2025 23:40:13 - INFO - cli_bridge.py:184 - JVM started successfully
-10.06.2025 23:40:13 - INFO - cli_bridge.py:203 - Loading InputCLI class...
-10.06.2025 23:40:13 - INFO - cli_bridge.py:205 - InputCLI class loaded successfully
-10.06.2025 23:40:13 - INFO - cli_bridge.py:49 - CLI bridge setup completed successfully
-10.06.2025 23:40:13 - INFO - input_interface.py:103 - User message routing configured successfully
-10.06.2025 23:40:13 - INFO - input_interface.py:62 - InputInterface initialized with cli strategy
-10.06.2025 23:40:13 - INFO - main.py:139 - Input interface initialized successfully
-10.06.2025 23:40:13 - INFO - main.py:163 - Creating state instances...
-10.06.2025 23:40:13 - INFO - main.py:176 - All state instances created successfully
-10.06.2025 23:40:13 - INFO - main.py:195 - Initializing state machine...
-10.06.2025 23:40:13 - INFO - state_machine.py:41 - StateMachine initialized
-10.06.2025 23:40:13 - INFO - main.py:205 - State machine initialized successfully
-10.06.2025 23:40:13 - INFO - main.py:297 - Malg-ACTA system initialized successfully
+11.06.2025 16:32:51 - INFO - main.py:382 - Initialization complete
+11.06.2025 16:32:51 - INFO - main.py:27 - Initializing unified JVM for all Java components...
+11.06.2025 16:32:51 - INFO - main.py:39 - GUI mode detected - configuring JVM for JavaFX
+11.06.2025 16:32:51 - INFO - main.py:48 - Added GUI classes directory: C:\Users\V\Projects\malg-acta\app_modules\input\gui\gui-app\target\classes
+11.06.2025 16:32:51 - INFO - main.py:52 - Added GUI dependencies: C:\Users\V\Projects\malg-acta\app_modules\input\gui\gui-app\target\dependency
+11.06.2025 16:32:51 - INFO - main.py:80 - Added Excel classes directory: C:\Users\V\Projects\malg-acta\app_modules\output\receipt_generation\excel_generation
+11.06.2025 16:32:51 - INFO - main.py:86 - Added 54 Excel JAR files
+11.06.2025 16:32:51 - INFO - main.py:94 - Starting JVM with unified classpath (57 components)
+11.06.2025 16:32:51 - INFO - main.py:96 - JVM arguments: ['-Djava.awt.headless=false', '--module-path=C:\\Users\\V\\Projects\\malg-acta\\app_modules\\input\\gui\\gui-app\\target\\dependency', '--add-modules=javafx.controls', '--add-exports=javafx.graphics/com.sun.javafx.application=ALL-UNNAMED']
+11.06.2025 16:32:52 - INFO - main.py:104 - Unified JVM started successfully
+11.06.2025 16:32:52 - INFO - main.py:388 - Malg-ACTA system initialization starting...
+11.06.2025 16:32:52 - INFO - main.py:197 - Initializing plugin manager...
+11.06.2025 16:32:52 - INFO - plugin_manager.py:42 - Plugin configuration processed successfully
+11.06.2025 16:32:52 - INFO - plugin_manager.py:57 - Plugin category 'input': 2 plugins available
+11.06.2025 16:32:52 - INFO - plugin_manager.py:57 - Plugin category 'acquisition': 2 plugins available
+11.06.2025 16:32:52 - INFO - plugin_manager.py:57 - Plugin category 'output': 2 plugins available
+11.06.2025 16:32:52 - INFO - plugin_manager.py:57 - Plugin category 'protocols': 4 plugins available
+11.06.2025 16:32:52 - INFO - plugin_manager.py:57 - Plugin category 'data_storage': 3 plugins available
+11.06.2025 16:32:52 - INFO - plugin_manager.py:57 - Plugin category 'device_connection': 2 plugins available
+11.06.2025 16:32:52 - INFO - plugin_manager.py:29 - PluginManager initialized with 6 plugin categories
+11.06.2025 16:32:52 - INFO - main.py:210 - Plugin manager initialized successfully
+11.06.2025 16:32:52 - INFO - main.py:222 - Initializing input interface...
+11.06.2025 16:32:52 - INFO - plugin_manager.py:90 - Loading strategy: input.gui
+11.06.2025 16:32:52 - INFO - plugin_manager.py:148 - Importing plugin: app_modules.input.gui.gui_bridge.GUIBridge
+11.06.2025 16:32:52 - INFO - plugin_manager.py:157 - Plugin class loaded successfully: input.gui
+11.06.2025 16:32:52 - INFO - plugin_manager.py:110 - Strategy input.gui loaded successfully
+11.06.2025 16:32:52 - INFO - gui_bridge.py:36 - Setting up GUI bridge...
+11.06.2025 16:32:52 - INFO - gui_bridge.py:158 - JVM already started, skipping GUI JVM initialization
+11.06.2025 16:32:52 - INFO - gui_bridge.py:213 - Verified GUI class availability: AppController
+11.06.2025 16:32:52 - INFO - gui_bridge.py:224 - Loading AppController class...
+11.06.2025 16:32:52 - INFO - gui_bridge.py:228 - Launching JavaFX application...
+11.06.2025 16:32:52 - INFO - gui_bridge.py:237 - Waiting for GUI instance creation... (attempt 1/6)
+11.06.2025 16:32:53 - INFO - gui_bridge.py:250 - GUI instance created, waiting for startup...
+11.06.2025 16:32:54 - INFO - gui_bridge.py:255 - GUI application started successfully, isRunning() = True
+11.06.2025 16:32:54 - INFO - gui_bridge.py:288 - Data submission callback registered successfully
+11.06.2025 16:32:54 - INFO - gui_bridge.py:47 - GUI bridge setup completed successfully
+11.06.2025 16:32:54 - INFO - input_interface.py:103 - User message routing configured successfully
+11.06.2025 16:32:54 - INFO - input_interface.py:62 - InputInterface initialized with gui strategy
+11.06.2025 16:32:54 - INFO - main.py:227 - Input interface initialized successfully
+11.06.2025 16:32:54 - INFO - main.py:239 - Initializing output interface...
+11.06.2025 16:32:54 - INFO - plugin_manager.py:90 - Loading strategy: output.receipt_generator
+11.06.2025 16:32:54 - INFO - plugin_manager.py:148 - Importing plugin: app_modules.output.receipt_generation.receipt_generation_bridge.ReceiptGenerationBridge
+11.06.2025 16:32:54 - INFO - plugin_manager.py:157 - Plugin class loaded successfully: output.receipt_generator
+11.06.2025 16:32:54 - INFO - plugin_manager.py:110 - Strategy output.receipt_generator loaded successfully
+11.06.2025 16:32:54 - INFO - receipt_generation_bridge.py:41 - Setting up receipt generation bridge...
+11.06.2025 16:32:54 - INFO - receipt_generation_bridge.py:395 - Output directories ensured
+11.06.2025 16:32:54 - INFO - receipt_generation_bridge.py:46 - Receipt generation bridge setup completed
+11.06.2025 16:32:54 - INFO - output_interface.py:66 - Output strategies loaded successfully
+11.06.2025 16:32:54 - INFO - output_interface.py:51 - OutputInterface initialized successfully
+11.06.2025 16:32:54 - INFO - main.py:244 - Output interface initialized successfully
+11.06.2025 16:32:54 - INFO - main.py:268 - Creating state instances...
+11.06.2025 16:32:54 - INFO - main.py:282 - All state instances created successfully
+11.06.2025 16:32:54 - INFO - main.py:300 - Initializing state machine...
+11.06.2025 16:32:54 - INFO - state_machine.py:41 - StateMachine initialized
+11.06.2025 16:32:54 - INFO - main.py:310 - State machine initialized successfully
+11.06.2025 16:32:54 - INFO - main.py:408 - Malg-ACTA system initialized successfully
 
-10.06.2025 23:40:13 - INFO - main.py:298 - Starting application...
-10.06.2025 23:40:13 - INFO - main.py:316 - Starting Malg-ACTA application...
-10.06.2025 23:40:13 - INFO - state_machine.py:49 - Starting state machine
-10.06.2025 23:40:13 - INFO - state_machine.py:129 - Loaded state: idle_state
-10.06.2025 23:40:13 - INFO - idle_state.py:110 - Exiting idle state
-10.06.2025 23:40:13 - INFO - state_machine.py:129 - Loaded state: error_state
-10.06.2025 23:40:13 - INFO - error_state.py:27 - Entering error state - analyzing error
-10.06.2025 23:40:13 - ERROR - error_state.py:41 - Error from idle_state: Idle state exited unexpectedly
-10.06.2025 23:40:13 - ERROR - error_state.py:43 - Error type: StateMachineError
-10.06.2025 23:40:13 - INFO - state_machine.py:159 - Transitioned from idle_state to error_state
-10.06.2025 23:40:13 - INFO - error_state.py:94 - Exiting error state
-10.06.2025 23:40:13 - INFO - state_machine.py:129 - Loaded state: idle_state
-10.06.2025 23:40:13 - INFO - idle_state.py:32 - Entering idle state - system ready
-10.06.2025 23:40:13 - INFO - state_machine.py:159 - Transitioned from error_state to idle_state
-10.06.2025 23:40:13 - INFO - idle_state.py:69 - User initiated testing workflow
-10.06.2025 23:40:13 - INFO - idle_state.py:110 - Exiting idle state
-10.06.2025 23:40:13 - INFO - state_machine.py:129 - Loaded state: input_state
-10.06.2025 23:40:13 - INFO - input_state.py:24 - Entering input state - ready for user data
-10.06.2025 23:40:13 - INFO - state_machine.py:159 - Transitioned from idle_state to input_state
-10.06.2025 23:40:13 - INFO - input_state.py:57 - Starting user data collection
-10.06.2025 23:40:13 - INFO - input_interface.py:115 - Starting user input collection
-10.06.2025 23:40:13 - INFO - cli_bridge.py:67 - Starting CLI input collection...
-10.06.2025 23:40:13 - INFO - cli_bridge.py:222 - Starting Java CLI application...
-10.06.2025 23:40:27 - INFO - cli_bridge.py:270 - Java object converted to Python dictionary successfully
-10.06.2025 23:40:27 - INFO - cli_bridge.py:236 - CLI data collection completed
-10.06.2025 23:40:27 - INFO - cli_bridge.py:84 - User completed CLI input
-10.06.2025 23:40:27 - INFO - input_interface.py:121 - Raw user data collected, processing...
-10.06.2025 23:40:27 - INFO - input_interface.py:275 - CLI data transformed successfully
-10.06.2025 23:40:27 - INFO - input_interface.py:129 - User input validation successful
-10.06.2025 23:40:27 - INFO - input_state.py:85 - Collected input data for protocol: cube_compression_testing
-10.06.2025 23:40:27 - INFO - input_state.py:86 - Set ID: 1, Size: 1
-10.06.2025 23:40:27 - INFO - input_state.py:87 - Client: 1
-10.06.2025 23:40:27 - INFO - input_state.py:183 - Cube compression validation: requires scale and press measurements
-10.06.2025 23:40:27 - INFO - input_state.py:166 - Protocol-specific validation passed for cube_compression_testing
-10.06.2025 23:40:27 - INFO - input_state.py:93 - Input validation completed successfully
-10.06.2025 23:40:27 - INFO - input_state.py:126 - Exiting input state
-10.06.2025 23:40:27 - INFO - input_state.py:130 - Input data collected: cube_compression_testing for 1 specimens
-10.06.2025 23:40:27 - INFO - state_machine.py:129 - Loaded state: acquisition_state
-10.06.2025 23:40:27 - INFO - acquisition_state.py:39 - Entering acquisition state - preparing for testing
-10.06.2025 23:40:27 - INFO - acquisition_state.py:45 - Starting cube_compression_testing for 1 specimens
-10.06.2025 23:40:27 - INFO - acquisition_state.py:155 - Created set data structure for 1 specimens
-10.06.2025 23:40:27 - INFO - state_machine.py:159 - Transitioned from input_state to acquisition_state
-10.06.2025 23:40:27 - INFO - acquisition_state.py:67 - Starting specimen data collection
-10.06.2025 23:40:27 - INFO - acquisition_state.py:247 - Cube compression test - specimen 1
-10.06.2025 23:40:30 - INFO - set_data.py:48 - Added specimen to set. Count: 1/1
-10.06.2025 23:40:30 - INFO - acquisition_state.py:87 - Specimen 1 data collected successfully
-10.06.2025 23:40:30 - INFO - acquisition_state.py:90 - All specimen data collected successfully
-10.06.2025 23:40:30 - INFO - acquisition_state.py:124 - Exiting acquisition state
-10.06.2025 23:40:30 - INFO - acquisition_state.py:128 - Successfully collected data for 1 specimens
-10.06.2025 23:40:30 - INFO - state_machine.py:129 - Loaded state: dissemination_state
-10.06.2025 23:40:30 - INFO - dissemination_state.py:36 - Entering dissemination state - processing results
-10.06.2025 23:40:30 - INFO - state_machine.py:159 - Transitioned from acquisition_state to dissemination_state
-10.06.2025 23:40:30 - INFO - dissemination_state.py:66 - Starting result processing and output generation
-10.06.2025 23:40:30 - INFO - input_data.py:107 - Calculated sample age: 333679 days (from 11.11.1111 to 10.06.2025)
-10.06.2025 23:40:30 - INFO - dissemination_state.py:155 - Sample age calculated: 333679 days
-10.06.2025 23:40:30 - INFO - dissemination_state.py:169 - Processing test results...
-10.06.2025 23:40:30 - INFO - dissemination_state.py:234 - Calculated statistics for 1 strength measurements
-10.06.2025 23:40:30 - INFO - dissemination_state.py:202 - Processed 1 specimens for cube_compression_testing
-10.06.2025 23:40:30 - INFO - dissemination_state.py:248 - Generating output formats: PDF
-10.06.2025 23:40:30 - INFO - dissemination_state.py:269 - Generating PDF format...
-10.06.2025 23:40:31 - INFO - dissemination_state.py:278 - Generated mock PDF: 1_20250610_234031.pdf
-10.06.2025 23:40:31 - INFO - dissemination_state.py:253 - All requested formats generated successfully
-10.06.2025 23:40:31 - INFO - dissemination_state.py:294 - Updating testing registry...
-10.06.2025 23:40:31 - INFO - dissemination_state.py:309 - Registry updated with entry for set 1
-10.06.2025 23:40:31 - INFO - cli_bridge.py:112 - Unlocking CLI interface...
-10.06.2025 23:40:33 - INFO - cli_bridge.py:124 - Application will now exit
-10.06.2025 23:40:33 - INFO - input_interface.py:160 - Interface unlocked successfully
-10.06.2025 23:40:33 - INFO - dissemination_state.py:123 - Exiting dissemination state
-10.06.2025 23:40:33 - INFO - dissemination_state.py:127 - Successfully processed 1 specimens
-10.06.2025 23:40:33 - INFO - state_machine.py:129 - Loaded state: idle_state
-10.06.2025 23:40:33 - INFO - idle_state.py:32 - Entering idle state - system ready
-10.06.2025 23:40:33 - INFO - state_machine.py:159 - Transitioned from dissemination_state to idle_state
-10.06.2025 23:40:33 - INFO - idle_state.py:167 - User chose to exit application
-10.06.2025 23:40:33 - INFO - idle_state.py:77 - User requested application exit
-10.06.2025 23:40:33 - INFO - state_machine.py:63 - State machine stop requested
-10.06.2025 23:40:33 - INFO - state_machine.py:190 - Cleaning up state machine...
-10.06.2025 23:40:33 - INFO - idle_state.py:110 - Exiting idle state
-10.06.2025 23:40:33 - INFO - state_machine.py:197 - State machine cleanup completed
-10.06.2025 23:40:33 - INFO - input_interface.py:283 - Shutting down input interface...
-10.06.2025 23:40:33 - INFO - cli_bridge.py:137 - Shutting down CLI bridge...
-10.06.2025 23:40:33 - INFO - cli_bridge.py:148 - CLI bridge shutdown completed
-10.06.2025 23:40:33 - INFO - input_interface.py:285 - Input interface shutdown completed
-10.06.2025 23:40:33 - INFO - state_machine.py:190 - Cleaning up state machine...
-10.06.2025 23:40:33 - INFO - idle_state.py:110 - Exiting idle state
-10.06.2025 23:40:33 - INFO - state_machine.py:197 - State machine cleanup completed
-10.06.2025 23:40:33 - INFO - main.py:326 - Application shutdown completed successfully
-10.06.2025 23:40:33 - INFO - main.py:341 - Malg-ACTA application shutdown
+11.06.2025 16:32:54 - INFO - main.py:409 - Starting application...
+11.06.2025 16:32:54 - INFO - main.py:426 - Starting Malg-ACTA application...
+11.06.2025 16:32:54 - INFO - state_machine.py:49 - Starting state machine
+11.06.2025 16:32:54 - INFO - state_machine.py:129 - Loaded state: idle_state
+11.06.2025 16:32:54 - INFO - idle_state.py:110 - Exiting idle state
+11.06.2025 16:32:54 - INFO - state_machine.py:129 - Loaded state: error_state
+11.06.2025 16:32:54 - INFO - error_state.py:27 - Entering error state - analyzing error
+11.06.2025 16:32:54 - ERROR - error_state.py:41 - Error from idle_state: Idle state exited unexpectedly
+11.06.2025 16:32:54 - ERROR - error_state.py:43 - Error type: StateMachineError
+11.06.2025 16:32:54 - INFO - state_machine.py:159 - Transitioned from idle_state to error_state
+11.06.2025 16:32:54 - INFO - error_state.py:94 - Exiting error state
+11.06.2025 16:32:54 - INFO - state_machine.py:129 - Loaded state: idle_state
+11.06.2025 16:32:54 - INFO - idle_state.py:32 - Entering idle state - system ready
+11.06.2025 16:32:54 - INFO - state_machine.py:159 - Transitioned from error_state to idle_state
+11.06.2025 16:33:08 - INFO - gui_bridge.py:299 - User submitted data in GUI - retrieving...
+11.06.2025 16:33:08 - INFO - gui_bridge.py:308 - Data retrieved successfully from GUI
+11.06.2025 16:33:08 - INFO - idle_state.py:69 - User initiated testing workflow
+11.06.2025 16:33:08 - INFO - idle_state.py:110 - Exiting idle state
+11.06.2025 16:33:08 - INFO - state_machine.py:129 - Loaded state: input_state
+11.06.2025 16:33:08 - INFO - input_state.py:24 - Entering input state - ready for user data
+11.06.2025 16:33:08 - INFO - input_state.py:31 - Received pre-submitted data from GUI
+11.06.2025 16:33:08 - INFO - state_machine.py:159 - Transitioned from idle_state to input_state
+11.06.2025 16:33:08 - INFO - input_state.py:57 - Starting user data collection
+11.06.2025 16:33:08 - INFO - input_state.py:61 - Using pre-submitted data from GUI
+11.06.2025 16:33:08 - INFO - input_interface.py:236 - GUI data transformed successfully
+11.06.2025 16:33:08 - INFO - input_state.py:85 - Collected input data for protocol: beam_compression_testing
+11.06.2025 16:33:08 - INFO - input_state.py:86 - Set ID: 1, Size: 1
+11.06.2025 16:33:08 - INFO - input_state.py:87 - Client: 1
+11.06.2025 16:33:08 - INFO - input_state.py:203 - Beam compression validation: requires two press measurements per specimen
+11.06.2025 16:33:08 - INFO - input_state.py:166 - Protocol-specific validation passed for beam_compression_testing
+11.06.2025 16:33:08 - INFO - input_state.py:93 - Input validation completed successfully
+11.06.2025 16:33:08 - INFO - input_state.py:126 - Exiting input state
+11.06.2025 16:33:08 - INFO - input_state.py:130 - Input data collected: beam_compression_testing for 1 specimens
+11.06.2025 16:33:08 - INFO - state_machine.py:129 - Loaded state: acquisition_state
+11.06.2025 16:33:08 - INFO - acquisition_state.py:39 - Entering acquisition state - preparing for testing
+11.06.2025 16:33:08 - INFO - acquisition_state.py:45 - Starting beam_compression_testing for 1 specimens
+11.06.2025 16:33:08 - INFO - acquisition_state.py:155 - Created set data structure for 1 specimens
+11.06.2025 16:33:08 - INFO - state_machine.py:159 - Transitioned from input_state to acquisition_state
+11.06.2025 16:33:08 - INFO - acquisition_state.py:67 - Starting specimen data collection
+11.06.2025 16:33:08 - INFO - acquisition_state.py:281 - Beam compression test - specimen 1 (2 measurements)
+11.06.2025 16:33:12 - INFO - set_data.py:48 - Added specimen to set. Count: 1/1
+11.06.2025 16:33:12 - INFO - acquisition_state.py:87 - Specimen 1 data collected successfully
+11.06.2025 16:33:12 - INFO - acquisition_state.py:90 - All specimen data collected successfully
+11.06.2025 16:33:12 - INFO - acquisition_state.py:124 - Exiting acquisition state
+11.06.2025 16:33:12 - INFO - acquisition_state.py:128 - Successfully collected data for 1 specimens
+11.06.2025 16:33:12 - INFO - state_machine.py:129 - Loaded state: dissemination_state
+11.06.2025 16:33:12 - INFO - dissemination_state.py:41 - Entering dissemination state - processing results
+11.06.2025 16:33:12 - INFO - state_machine.py:159 - Transitioned from acquisition_state to dissemination_state
+11.06.2025 16:33:12 - INFO - dissemination_state.py:71 - Starting result processing and output generation
+11.06.2025 16:33:12 - INFO - input_data.py:107 - Calculated sample age: -14 days (from 25.06.2025 to 11.06.2025)
+11.06.2025 16:33:12 - INFO - dissemination_state.py:160 - Sample age calculated: -14 days
+11.06.2025 16:33:12 - INFO - dissemination_state.py:174 - Processing test results...
+11.06.2025 16:33:12 - INFO - dissemination_state.py:239 - Calculated statistics for 1 strength measurements
+11.06.2025 16:33:12 - INFO - dissemination_state.py:207 - Processed 1 specimens for beam_compression_testing
+11.06.2025 16:33:12 - INFO - dissemination_state.py:257 - Generating receipts using output interface...
+11.06.2025 16:33:12 - INFO - output_interface.py:86 - Generating receipts for beam_compression_testing, set 1
+11.06.2025 16:33:12 - INFO - output_interface.py:87 - Requested formats: PDF
+11.06.2025 16:33:12 - INFO - output_interface.py:93 - Generating PDF receipt...
+11.06.2025 16:33:12 - INFO - receipt_generation_bridge.py:64 - Generating PDF receipt for beam_compression_testing
+11.06.2025 16:33:12 - INFO - receipt_generation_bridge.py:122 - Converted data for 1 specimens
+11.06.2025 16:33:13 - INFO - receipt_generation_bridge.py:156 - PDF receipt generated successfully: beam_compression.pdf
+11.06.2025 16:33:13 - INFO - output_interface.py:98 - PDF receipt generated: beam_compression.pdf
+11.06.2025 16:33:13 - INFO - output_interface.py:105 - Successfully generated 1 receipt files
+11.06.2025 16:33:13 - INFO - dissemination_state.py:281 - Updating testing registry...
+11.06.2025 16:33:13 - INFO - dissemination_state.py:296 - Registry updated with entry for set 1
+11.06.2025 16:33:13 - INFO - gui_bridge.py:110 - Unlocking GUI interface for next cycle
+11.06.2025 16:33:13 - INFO - input_interface.py:160 - Interface unlocked successfully
+11.06.2025 16:33:13 - INFO - dissemination_state.py:128 - Exiting dissemination state
+11.06.2025 16:33:13 - INFO - dissemination_state.py:132 - Successfully processed 1 specimens
+11.06.2025 16:33:13 - INFO - state_machine.py:129 - Loaded state: idle_state
+11.06.2025 16:33:13 - INFO - idle_state.py:32 - Entering idle state - system ready
+11.06.2025 16:33:13 - INFO - state_machine.py:159 - Transitioned from dissemination_state to idle_state
+11.06.2025 16:33:38 - INFO - gui_bridge.py:299 - User submitted data in GUI - retrieving...
+11.06.2025 16:33:38 - INFO - gui_bridge.py:308 - Data retrieved successfully from GUI
+11.06.2025 16:33:38 - INFO - idle_state.py:69 - User initiated testing workflow
+11.06.2025 16:33:38 - INFO - idle_state.py:110 - Exiting idle state
+11.06.2025 16:33:38 - INFO - state_machine.py:129 - Loaded state: input_state
+11.06.2025 16:33:38 - INFO - input_state.py:24 - Entering input state - ready for user data
+11.06.2025 16:33:38 - INFO - input_state.py:31 - Received pre-submitted data from GUI
+11.06.2025 16:33:38 - INFO - state_machine.py:159 - Transitioned from idle_state to input_state
+11.06.2025 16:33:38 - INFO - input_state.py:57 - Starting user data collection
+11.06.2025 16:33:38 - INFO - input_state.py:61 - Using pre-submitted data from GUI
+11.06.2025 16:33:38 - INFO - input_interface.py:236 - GUI data transformed successfully
+11.06.2025 16:33:38 - INFO - input_state.py:85 - Collected input data for protocol: beam_compression_testing
+11.06.2025 16:33:38 - INFO - input_state.py:86 - Set ID: 1, Size: 1
+11.06.2025 16:33:38 - INFO - input_state.py:87 - Client: 1
+11.06.2025 16:33:38 - INFO - input_state.py:203 - Beam compression validation: requires two press measurements per specimen
+11.06.2025 16:33:38 - INFO - input_state.py:166 - Protocol-specific validation passed for beam_compression_testing
+11.06.2025 16:33:38 - INFO - input_state.py:93 - Input validation completed successfully
+11.06.2025 16:33:38 - INFO - input_state.py:126 - Exiting input state
+11.06.2025 16:33:38 - INFO - input_state.py:130 - Input data collected: beam_compression_testing for 1 specimens
+11.06.2025 16:33:38 - INFO - state_machine.py:129 - Loaded state: acquisition_state
+11.06.2025 16:33:38 - INFO - acquisition_state.py:39 - Entering acquisition state - preparing for testing
+11.06.2025 16:33:38 - INFO - acquisition_state.py:45 - Starting beam_compression_testing for 1 specimens
+11.06.2025 16:33:38 - INFO - acquisition_state.py:155 - Created set data structure for 1 specimens
+11.06.2025 16:33:38 - INFO - state_machine.py:159 - Transitioned from input_state to acquisition_state
+11.06.2025 16:33:38 - INFO - acquisition_state.py:67 - Starting specimen data collection
+11.06.2025 16:33:38 - INFO - acquisition_state.py:281 - Beam compression test - specimen 1 (2 measurements)
+11.06.2025 16:33:42 - INFO - set_data.py:48 - Added specimen to set. Count: 1/1
+11.06.2025 16:33:42 - INFO - acquisition_state.py:87 - Specimen 1 data collected successfully
+11.06.2025 16:33:42 - INFO - acquisition_state.py:90 - All specimen data collected successfully
+11.06.2025 16:33:42 - INFO - acquisition_state.py:124 - Exiting acquisition state
+11.06.2025 16:33:42 - INFO - acquisition_state.py:128 - Successfully collected data for 1 specimens
+11.06.2025 16:33:42 - INFO - state_machine.py:129 - Loaded state: dissemination_state
+11.06.2025 16:33:42 - INFO - dissemination_state.py:41 - Entering dissemination state - processing results
+11.06.2025 16:33:42 - INFO - state_machine.py:159 - Transitioned from acquisition_state to dissemination_state
+11.06.2025 16:33:42 - INFO - dissemination_state.py:71 - Starting result processing and output generation
+11.06.2025 16:33:42 - INFO - input_data.py:107 - Calculated sample age: -14 days (from 25.06.2025 to 11.06.2025)
+11.06.2025 16:33:42 - INFO - dissemination_state.py:160 - Sample age calculated: -14 days
+11.06.2025 16:33:42 - INFO - dissemination_state.py:174 - Processing test results...
+11.06.2025 16:33:42 - INFO - dissemination_state.py:239 - Calculated statistics for 1 strength measurements
+11.06.2025 16:33:42 - INFO - dissemination_state.py:207 - Processed 1 specimens for beam_compression_testing
+11.06.2025 16:33:42 - INFO - dissemination_state.py:257 - Generating receipts using output interface...
+11.06.2025 16:33:42 - INFO - output_interface.py:86 - Generating receipts for beam_compression_testing, set 1
+11.06.2025 16:33:42 - INFO - output_interface.py:87 - Requested formats: PDF
+11.06.2025 16:33:42 - INFO - output_interface.py:93 - Generating PDF receipt...
+11.06.2025 16:33:42 - INFO - receipt_generation_bridge.py:64 - Generating PDF receipt for beam_compression_testing
+11.06.2025 16:33:42 - INFO - receipt_generation_bridge.py:122 - Converted data for 1 specimens
+11.06.2025 16:33:42 - INFO - receipt_generation_bridge.py:156 - PDF receipt generated successfully: beam_compression.pdf
+11.06.2025 16:33:42 - INFO - output_interface.py:98 - PDF receipt generated: beam_compression.pdf
+11.06.2025 16:33:42 - INFO - output_interface.py:105 - Successfully generated 1 receipt files
+11.06.2025 16:33:42 - INFO - dissemination_state.py:281 - Updating testing registry...
+11.06.2025 16:33:42 - INFO - dissemination_state.py:296 - Registry updated with entry for set 1
+11.06.2025 16:33:42 - INFO - gui_bridge.py:110 - Unlocking GUI interface for next cycle
+11.06.2025 16:33:42 - INFO - input_interface.py:160 - Interface unlocked successfully
+11.06.2025 16:33:42 - INFO - dissemination_state.py:128 - Exiting dissemination state
+11.06.2025 16:33:42 - INFO - dissemination_state.py:132 - Successfully processed 1 specimens
+11.06.2025 16:33:42 - INFO - state_machine.py:129 - Loaded state: idle_state
+11.06.2025 16:33:42 - INFO - idle_state.py:32 - Entering idle state - system ready
+11.06.2025 16:33:42 - INFO - state_machine.py:159 - Transitioned from dissemination_state to idle_state
+11.06.2025 16:34:08 - INFO - idle_state.py:140 - GUI was closed by user
+11.06.2025 16:34:08 - INFO - idle_state.py:77 - User requested application exit
+11.06.2025 16:34:08 - INFO - state_machine.py:63 - State machine stop requested
+11.06.2025 16:34:08 - INFO - state_machine.py:190 - Cleaning up state machine...
+11.06.2025 16:34:08 - INFO - idle_state.py:110 - Exiting idle state
+11.06.2025 16:34:08 - INFO - state_machine.py:197 - State machine cleanup completed
+11.06.2025 16:34:08 - INFO - output_interface.py:118 - Shutting down output interface...
+11.06.2025 16:34:08 - INFO - output_interface.py:127 - Output interface shutdown completed
+11.06.2025 16:34:08 - INFO - input_interface.py:283 - Shutting down input interface...
+11.06.2025 16:34:08 - INFO - gui_bridge.py:138 - Shutting down GUI bridge...
+11.06.2025 16:34:08 - INFO - gui_bridge.py:147 - GUI bridge shutdown completed
+11.06.2025 16:34:08 - INFO - input_interface.py:285 - Input interface shutdown completed
+11.06.2025 16:34:08 - INFO - state_machine.py:190 - Cleaning up state machine...
+11.06.2025 16:34:08 - INFO - idle_state.py:110 - Exiting idle state
+11.06.2025 16:34:08 - INFO - state_machine.py:197 - State machine cleanup completed
+11.06.2025 16:34:08 - INFO - main.py:436 - Application shutdown completed successfully
+11.06.2025 16:34:08 - INFO - main.py:451 - Malg-ACTA application shutdown
