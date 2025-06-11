@@ -3,10 +3,10 @@
 # Logging configuration:
 logging:
   path: "logs/default.log"  # Log file path (relative to project root)
-  console_enabled: false    # Enable console output alongside file logging
+  console_enabled: true     # Enable console output alongside file logging
 
 input:
-  method: "cli"   # Input method, currently "gui" or "cli"
+  method: "gui"   # Input method, currently "gui" or "cli"
   retry_count: 3  # Number of retry attempts for GUI/CLI initialization failures
 
 # Data storage configuration:
