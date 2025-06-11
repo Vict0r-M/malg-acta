@@ -148,10 +148,7 @@ class AcquisitionState:
         """Create SetData instance with input data"""
 
         try:
-            # Import SetData model:
-            from app_modules.models.set_data import SetData
-
-            set_data = SetData(input_data=input_data)
+            set_data = self.set_data_class(input_data=input_data)
             ctx.logger.info(f"Created set data structure for {input_data.set_size} specimens")
             return set_data
 
