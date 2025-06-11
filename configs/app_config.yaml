@@ -6,7 +6,7 @@ logging:
   console_enabled: false    # Enable console output alongside file logging
 
 input:
-  method: "gui"   # Input method, currently "gui" or "cli"
+  method: "cli"   # Input method, currently "gui" or "cli"
   retry_count: 3  # Number of retry attempts for GUI/CLI initialization failures
 
 # Data storage configuration:

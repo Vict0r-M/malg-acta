@@ -77,9 +77,6 @@ class DisseminationState:
             # Step 3: Generate receipts using output interface:
             generated_files = self._generate_receipts(ctx)
 
-            # Step 4: Update registry (mock for 1.0.0):
-            self._update_registry(ctx, results_summary)
-
             # Step 5: Handle printing if requested (skip for 1.0.0):
             if self.set_data.input_data.should_print:
                 ctx.logger.info("Printing skipped in version 1.0.0", target="user")

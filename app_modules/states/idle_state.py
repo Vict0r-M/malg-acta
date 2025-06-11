@@ -93,8 +93,12 @@ class IdleState:
                     return ("error_state", {"error": error_obj, "source_state": "idle_state"})
 
             # If we exit the loop without user trigger, something went wrong:
-            return ("error_state", {"error": ctx.errors.StateMachineError("Idle state exited unexpectedly"),
-                                    "source_state": "idle_state"})
+            if self.waiting_for_input:  # Only error if we're still supposed to be waiting
+                return ("error_state", {"error": ctx.errors.StateMachineError("Idle state exited unexpectedly"),
+                                        "source_state": "idle_state"})
+            else:
+                # Normal exit - this shouldn't happen but handle gracefully:
+                return ("input_state", None)
 
         except Exception as e:
             error_msg = f"Critical error in idle state execution: {str(e)}"
