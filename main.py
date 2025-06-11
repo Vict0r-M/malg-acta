@@ -9,11 +9,103 @@ import sys
 import yaml
 import atexit
 import argparse
+import jpype
 from box import Box
 from pathlib import Path
 from typing import Tuple, Any
 
 #%% Setup functions:
+
+def initialize_jvm(ctx: Any) -> None:
+    """Initialize JVM once with all required classpaths"""
+
+    try:
+        if jpype.isJVMStarted():
+            ctx.logger.info("JVM already started")
+            return
+
+        ctx.logger.info("Initializing unified JVM for all Java components...")
+
+        # Build combined classpath:
+        project_root = Path(__file__).parent
+        classpath = []
+        jvm_args = []
+
+        # Check input method to determine if we need JavaFX:
+        input_method = ctx.config.input.method
+
+        if input_method == "gui":
+            # GUI mode: Need JavaFX support:
+            ctx.logger.info("GUI mode detected - configuring JVM for JavaFX")
+
+            # GUI classpath
+            gui_app_path = project_root / "app_modules" / "input" / "gui" / "gui-app"
+            gui_classes_dir = gui_app_path / "target" / "classes"
+            gui_deps_dir = gui_app_path / "target" / "dependency"
+
+            if gui_classes_dir.exists():
+                classpath.append(str(gui_classes_dir))
+                ctx.logger.info(f"Added GUI classes directory: {gui_classes_dir}")
+
+            if gui_deps_dir.exists():
+                classpath.append(str(gui_deps_dir / "*"))
+                ctx.logger.info(f"Added GUI dependencies: {gui_deps_dir}")
+
+                # JavaFX JVM arguments
+                jvm_args.extend(["-Djava.awt.headless=false",
+                                f"--module-path={gui_deps_dir}",
+                                "--add-modules=javafx.controls",
+                                "--add-exports=javafx.graphics/com.sun.javafx.application=ALL-UNNAMED"])
+
+        elif input_method == "cli":
+            # CLI mode: Add CLI JAR:
+            ctx.logger.info("CLI mode detected - configuring JVM for CLI")
+
+            cli_app_path = project_root / "app_modules" / "input" / "cli" / "cli-app"
+            cli_jar = cli_app_path / "target" / "cli-app-0.0.1-SNAPSHOT-jar-with-dependencies.jar"
+            if cli_jar.exists():
+                classpath.append(str(cli_jar))
+                ctx.logger.info(f"Added CLI JAR: {cli_jar}")
+            else:
+                ctx.logger.warning(f"CLI JAR not found: {cli_jar}")
+
+        # Excel generation classpath:
+        excel_dir = project_root / "app_modules" / "output" / "receipt_generation" / "excel_generation"
+        excel_lib_dir = excel_dir / "lib"
+
+        if excel_dir.exists():
+            classpath.append(str(excel_dir))
+            ctx.logger.info(f"Added Excel classes directory: {excel_dir}")
+
+            # Add all Excel JAR files:
+            jar_files = list(excel_lib_dir.glob("*.jar"))
+            for jar_file in jar_files:
+                classpath.append(str(jar_file))
+            ctx.logger.info(f"Added {len(jar_files)} Excel JAR files")
+        else:
+            ctx.logger.warning(f"Excel directory not found: {excel_dir}")
+
+        if not classpath:
+            ctx.logger.warning("No JVM classpath components found - Java functionality may be limited")
+            return
+
+        ctx.logger.info(f"Starting JVM with unified classpath ({len(classpath)} components)")
+        if jvm_args:
+            ctx.logger.info(f"JVM arguments: {jvm_args}")
+
+        # Start JVM with appropriate arguments:
+        if jvm_args:
+            jpype.startJVM(*jvm_args, classpath=classpath, convertStrings=False)
+        else:
+            jpype.startJVM(classpath=classpath, convertStrings=False)
+
+        ctx.logger.info("Unified JVM started successfully")
+
+    except Exception as e:
+        error_msg = f"Failed to initialize unified JVM: {str(e)}"
+        ctx.logger.error(error_msg)
+        raise ctx.errors.ConfigurationError(error_msg)
+
 
 def load_dependencies(logger: Any) -> Tuple[Any, Any, Any, Any]:
     """Import required modules"""
@@ -73,15 +165,16 @@ def load_data_models(logger: Any) -> Tuple[Any, Any, Any, Any, Any]:
         sys.exit(1)
 
 
-def load_interface_modules(logger: Any) -> Tuple[Any]:
+def load_interface_modules(logger: Any) -> Tuple[Any, Any]:
     """Import interface modules"""
 
     try:
         # Import interface modules:
         from app_modules.input.input_interface import InputInterface
+        from app_modules.output.output_interface import OutputInterface
 
         logger.info("Successfully imported interface modules")
-        return (InputInterface,)
+        return (InputInterface, OutputInterface)
 
     except Exception as e:
         logger.critical(f"Failed to import interface modules: {str(e)}")
@@ -145,8 +238,27 @@ def initialize_input_interface(ctx: Any, plugin_manager: Any, input_data_class: 
         raise ctx.errors.ConfigurationError(error_msg)
 
 
+def initialize_output_interface(ctx: Any, plugin_manager: Any, OutputInterface: type) -> Any:
+    """Initialize output interface with proper plugin strategy"""
+
+    try:
+        ctx.logger.info("Initializing output interface...")
+
+        # Create output interface with dependency injection:
+        output_interface = OutputInterface(ctx, plugin_manager)
+
+        ctx.logger.info("Output interface initialized successfully")
+        return output_interface
+
+    except Exception as e:
+        error_msg = f"Failed to initialize output interface: {str(e)}"
+        ctx.logger.error(error_msg)
+        raise ctx.errors.ConfigurationError(error_msg)
+
+
 def create_state_instances(ctx: Any, 
-                           input_interface: Any, 
+                           input_interface: Any,
+                           output_interface: Any,
                            IdleState: type, 
                            InputState: type, 
                            AcquisitionState: type,
@@ -166,12 +278,13 @@ def create_state_instances(ctx: Any,
         idle_state = IdleState()
         input_state = InputState(input_interface, InputData)
         acquisition_state = AcquisitionState(ScaleData, PressData, SpecimenData, SetData)
-        dissemination_state = DisseminationState()  # Mock implementation needs no dependencies
+        dissemination_state = DisseminationState()
         error_state = ErrorState()
 
-        # Set input interface reference in states that need session management:
+        # Set interface references in states that need session management:
         idle_state.set_input_interface(input_interface)
         dissemination_state.set_input_interface(input_interface)
+        dissemination_state.set_output_interface(output_interface)
 
         ctx.logger.info("All state instances created successfully")
         return (idle_state, input_state, acquisition_state, dissemination_state, error_state)
@@ -249,7 +362,7 @@ def main() -> None:
     InputData, ScaleData, PressData, SpecimenData, SetData = load_data_models(logger)
 
     # Load interface modules:
-    InputInterface, = load_interface_modules(logger)
+    InputInterface, OutputInterface = load_interface_modules(logger)
 
     # Create context:
     try:
@@ -276,6 +389,9 @@ def main() -> None:
         ctx.logger.info("Logger configured with final settings")
         ctx.logger.info_with_newline("Initialization complete")
 
+        # Initialize unified JVM for all Java components:
+        initialize_jvm(ctx)
+
         # Initialize core components:
         ctx.logger.info("Malg-ACTA system initialization starting...")
 
@@ -285,9 +401,12 @@ def main() -> None:
         # Initialize input interface:
         input_interface = initialize_input_interface(ctx, plugin_manager, InputData, InputInterface)
 
+        # Initialize output interface:
+        output_interface = initialize_output_interface(ctx, plugin_manager, OutputInterface)
+
         # Create all state instances:
         idle_state, input_state, acquisition_state, dissemination_state, error_state = create_state_instances(
-            ctx, input_interface, IdleState, InputState, AcquisitionState, DisseminationState, ErrorState,
+            ctx, input_interface, output_interface, IdleState, InputState, AcquisitionState, DisseminationState, ErrorState,
             InputData, ScaleData, PressData, SpecimenData, SetData)
 
         # Initialize state machine:
@@ -298,7 +417,7 @@ def main() -> None:
         ctx.logger.info_with_newline("Starting application...")
 
         # Start the main application:
-        run_application(ctx, state_machine, input_interface)
+        run_application(ctx, state_machine, input_interface, output_interface)
 
     except custom_errors.ApplicationError as e:
         ctx.logger.exception(f"Malg-ACTA error during startup: {str(e)}")
@@ -309,7 +428,7 @@ def main() -> None:
         sys.exit(1)
 
 
-def run_application(ctx: Any, state_machine: Any, input_interface: Any) -> None:
+def run_application(ctx: Any, state_machine: Any, input_interface: Any, output_interface: Any) -> None:
     """Run the main application with proper resource management"""
 
     try:
@@ -319,8 +438,8 @@ def run_application(ctx: Any, state_machine: Any, input_interface: Any) -> None:
         ctx.logger.info("Application ready", target="user")
 
         # Use context managers for proper cleanup:
-        with state_machine, input_interface:
-            # Start the state machine (this blocks until application exit):
+        with state_machine, input_interface, output_interface:
+            # Start the state machine:
             state_machine.start()
 
         ctx.logger.info("Application shutdown completed successfully")
