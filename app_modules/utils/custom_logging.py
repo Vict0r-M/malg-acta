@@ -1,4 +1,4 @@
-"""Logging formatting and management for Malg-ACTA"""
+"""Logging formatting and management"""
 
 #%% Dependencies:
 
@@ -19,6 +19,7 @@ class FileExceptionHandler:
         self.logpath = logpath
         self._original_excepthook = sys.excepthook
 
+
     def __call__(self, exc_type: Any, exc_value: Any, exc_traceback: Any) -> None:
         """Handle uncaught exception by writing to log file"""
 
@@ -38,9 +39,9 @@ class FileExceptionHandler:
 #%% Main Logging Manager:
 
 class Logger:
-    def __init__(self, logpath: Path = Path("logs/malg_acta_init_error.log"), 
+    def __init__(self, logpath: Path = Path("logs/init_error.log"), 
                  console_enabled: bool = False) -> None:
-        """Manages logging setup with file rotation capability for Malg-ACTA"""
+        """Manages logging setup with file renaming capability"""
 
         # Set initial properties:
         self._path = logpath
@@ -49,9 +50,13 @@ class Logger:
         self._error_handler: Optional[FileExceptionHandler] = None
         self._logger: Optional[logging.Logger] = None
 
+        # User messaging setup:
+        self.user_message_handler = None
+
         # Setup initial logging:
         self._first_setup = True
         self._setup_logger()
+
 
     def _setup_logger(self) -> None:
         """Internal method to set up the logger with current settings"""
@@ -63,7 +68,7 @@ class Logger:
         if self._logger is None:
             self._logger = logging.getLogger('malg_acta')
             self._logger.setLevel(logging.INFO)
-            self._logger.propagate = False
+            self._logger.propagate = False  # Prevent logs from propagating to the root logger
 
         # Close and remove any existing handlers:
         for handler in self._logger.handlers[:]:
@@ -71,16 +76,14 @@ class Logger:
                 handler.close()
             self._logger.removeHandler(handler)
 
-        # Create formatter for materials testing context:
-        formatter = logging.Formatter(
-            '%(asctime)s - %(levelname)s - [%(filename)s:%(lineno)d] - %(message)s',
-            datefmt='%d.%m.%Y %H:%M:%S'
-        )
+        # Create formatter for detailed output:
+        formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(filename)s:%(lineno)d - %(message)s',
+                                      datefmt='%d.%m.%Y %H:%M:%S')
 
         mode = 'w' if self._first_setup else 'a'
         self._first_setup = False
 
-        # Add file handler:
+        # Add file handler and clear it's contents if it already exists:
         file_handler = logging.FileHandler(self._path, encoding='utf-8', errors='replace', mode=mode)
         file_handler.setFormatter(formatter)
         file_handler.setLevel(logging.INFO)
@@ -100,6 +103,7 @@ class Logger:
         else:
             self._error_handler.logpath = self._path
 
+
     def rename_logfile(self, logpath: Path) -> None:
         """Change the log file by creating a new file, copying content, and removing old file"""
 
@@ -111,7 +115,7 @@ class Logger:
             if isinstance(handler, logging.FileHandler):
                 handler.flush()
                 handler.close()
-                self._logger.removeHandler(handler)
+                self._logger.removeHandler(handler)  # Accumulate console handlers
 
         # Copy content from old to new if old file exists:
         copy_error = None
@@ -125,6 +129,7 @@ class Logger:
                     with open(logpath, 'w', encoding='utf-8', errors='replace') as dst:
                         shutil.copyfileobj(src, dst)
             except Exception as e:
+                # Store error for later logging (can't log now as handlers are closed):
                 copy_error = str(e)
 
             # Remove old log file:
@@ -152,6 +157,7 @@ class Logger:
             if deletion_error:
                 self.warning(f"Failed to delete old log file: {deletion_error}")
 
+
     def set_console_enabled(self, console_enabled: bool) -> None:
         """Enable or disable console output"""
 
@@ -166,14 +172,32 @@ class Logger:
         # Log the change:
         self.info(f"Console output {'enabled' if console_enabled else 'disabled'}")
 
-    # Convenience methods to log messages with materials testing context:
-    def info(self, message: str) -> None:
-        """Log an info message"""
-        self._logger.info(message, stacklevel=2)
+
+    def _log_with_target(self, level: str, message: str, target: str) -> None:
+        """Route log message based on target"""
+
+        if target in ["dev", "both"]:
+            log_method = getattr(self._logger, level)
+            log_method(message, stacklevel=3)
+
+        if target in ["user", "both"] and self.user_message_handler is not None:
+            try:
+                self.user_message_handler(level.upper(), message)
+            except Exception as e:
+                # If user messaging fails, log to dev channel:
+                self._logger.warning(f"User message failed: {str(e)}")
+
+
+    # Convenience methods to log messages:
+    def info(self, message: str, target: str = "dev") -> None:
+        """Log an info message with optional target routing"""
+
+        self._log_with_target("info", message, target)
+
 
     def info_with_newline(self, message: str) -> None:
-        """Log an info message with a newline before it"""
-        
+        """Log an info message with a newline before it (dev-only)"""
+
         # Add a blank record first:
         if self._logger and hasattr(self._logger, 'handlers'):
             for handler in self._logger.handlers:
@@ -184,76 +208,45 @@ class Logger:
         # Log actual message:
         self._logger.info(message, stacklevel=2)
 
-    def warning(self, message: str) -> None:
-        """Log a warning message"""
-        self._logger.warning(message, stacklevel=2)
 
-    def error(self, message: str) -> None:
-        """Log an error message"""
-        self._logger.error(message, stacklevel=2)
+    def warning(self, message: str, target: str = "dev") -> None:
+        """Log a warning message with optional target routing"""
 
-    def critical(self, message: str) -> None:
-        """Log a critical message"""
-        self._logger.critical(message, stacklevel=2)
+        self._log_with_target("warning", message, target)
 
-    def exception(self, message: str) -> None:
+
+    def error(self, message: str, target: str = "dev") -> None:
+        """Log an error message with optional target routing"""
+
+        self._log_with_target("error", message, target)
+
+
+    def critical(self, message: str, target: str = "dev") -> None:
+        """Log a critical message with optional target routing"""
+
+        self._log_with_target("critical", message, target)
+
+
+    def exception(self, message: str, target: str = "dev") -> None:
         """Log an exception message with traceback"""
-        self._logger.exception(message, stacklevel=2)
+
+        if target == "dev":
+            # For dev-only, use built-in exception logging with automatic traceback:
+            self._logger.exception(message, stacklevel=2)
+        else:
+            # For user or both targets, manually format traceback and use _log_with_target:
+            full_message = f"{message}\n{traceback.format_exc()}"
+            self._log_with_target("error", full_message, target)
+
 
     def close_handlers(self) -> None:
         """Close all handlers properly"""
-        
+
         if self._logger:
             for handler in self._logger.handlers:
                 try:
                     handler.close()
                 except:
                     pass
-
-    # Materials testing specific logging methods:
-    def log_device_event(self, device_type: str, event: str, details: str = "") -> None:
-        """Log device-related events"""
-        message = f"Device [{device_type}]: {event}"
-        if details:
-            message += f" - {details}"
-        self.info(message)
-
-    def log_protocol_event(self, protocol: str, event: str, details: str = "") -> None:
-        """Log protocol-related events"""
-        message = f"Protocol [{protocol}]: {event}"
-        if details:
-            message += f" - {details}"
-        self.info(message)
-
-    def log_measurement(self, measurement_type: str, value: str, unit: str, specimen_id: str = "") -> None:
-        """Log measurement events"""
-        message = f"Measurement [{measurement_type}]: {value} {unit}"
-        if specimen_id:
-            message += f" (Specimen: {specimen_id})"
-        self.info(message)
-
-    def log_validation_error(self, field_name: str, value: str, error_message: str) -> None:
-        """Log validation errors with context"""
-        message = f"Validation Error [{field_name}]: {error_message} (value: {value})"
-        self.error(message)
-
-    def log_workflow_transition(self, from_state: str, to_state: str, reason: str = "") -> None:
-        """Log workflow state transitions"""
-        message = f"Workflow: {from_state} → {to_state}"
-        if reason:
-            message += f" ({reason})"
-        self.info(message)
-
-    def log_file_operation(self, operation: str, file_path: str, success: bool, details: str = "") -> None:
-        """Log file operations"""
-        status = "SUCCESS" if success else "FAILED"
-        message = f"File [{operation}]: {file_path} - {status}"
-        if details:
-            message += f" - {details}"
-        
-        if success:
-            self.info(message)
-        else:
-            self.error(message)
 
 #%%

@@ -1,0 +1,26 @@
+# Defines all available plugins for dynamic loading by the plugin manager:
+
+# Input plugins - handle user input collection:
+input:
+  gui:
+    module: "app_modules.input.gui.gui_bridge"
+    class: "GUIBridge"
+    description: "JavaFX GUI input strategy using JPype1"
+    
+  cli:
+    module: "app_modules.input.cli.cli_bridge"
+    class: "CLIBridge"
+    description: "Java CLI input strategy using JPype1"
+
+
+# Output plugins - handle report generation and printing:
+output:
+  receipt_generator:
+    module: "app_modules.output.receipt_generation.receipt_generation_bridge"
+    class: "ReceiptGenerationBridge"
+    description: "Java-based receipt generation (PDF, Excel, Word)"
+    
+  printer:
+    module: "app_modules.output.printing.printer_plugin"
+    class: "PrinterPlugin"
+    description: "Receipt printing to physical printer"

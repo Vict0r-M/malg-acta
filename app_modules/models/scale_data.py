@@ -2,7 +2,7 @@
 
 #%% Dependencies:
 
-from typing import ClassVar
+from typing import ClassVar, Any
 from pydantic import BaseModel, Field, field_validator
 
 #%% Main Class:
@@ -20,6 +20,7 @@ class ScaleData(BaseModel):
     mass_decimals: int = Field(default=1, ge=0, le=6)
     mass_unit: str = Field(default="kg")
 
+
     @field_validator('mass_unit')
     @classmethod
     def validate_mass_unit(cls, v: str) -> str:
@@ -36,7 +37,7 @@ class ScaleData(BaseModel):
         return f"{self.mass:.{self.mass_decimals}f} {self.mass_unit}"
 
 
-    def set_mass_format(self, decimals: int = None, unit: str = None) -> None:
+    def set_mass_format(self, ctx: Any, decimals: int = None, unit: str = None) -> None:
         """Update mass formatting configuration and convert units if needed"""
 
         if decimals is not None:
@@ -45,21 +46,25 @@ class ScaleData(BaseModel):
         if unit is not None:
             # Validate unit first:
             if unit not in self.ALLOWED_MASS_UNITS:
-                raise ValueError(f"Mass unit must be one of: {', '.join(sorted(self.ALLOWED_MASS_UNITS))}")
+                raise ctx.errors.ValidationError(f"Mass unit must be one of: {', '.join(sorted(self.ALLOWED_MASS_UNITS))}")
             
             # Define conversion factors relative to base SI unit (kg):
-            mass_conversions = {"kg": 1.0,        # kilogram
-                                "g": 1000.0,      # gram
-                                "mg": 1000000.0,  # miligram
-                                "t": 0.001,       # metric ton
-                                "lb": 2.20462,    # pounds
-                                "oz": 35.274}     # ounces
+            mass_conversions = {"kg": 1.0,        # Kilogram
+                                "g": 1000.0,      # Gram
+                                "mg": 1000000.0,  # Miligram
+                                "t": 0.001,       # Metric ton
+                                "lb": 2.20462,    # Pounds
+                                "oz": 35.274}     # Ounces
 
             current_factor = mass_conversions[self.mass_unit]
             new_factor = mass_conversions[unit]
 
             # Convert value - first to base unit (kg), then to target unit:
+            old_mass = self.mass
+            old_unit = self.mass_unit
             self.mass = self.mass / current_factor * new_factor
             self.mass_unit = unit
+
+            ctx.logger.info(f"Converted mass from {old_mass} {old_unit} to {self.mass} {unit}")
 
 #%%

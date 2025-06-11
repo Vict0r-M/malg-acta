@@ -19,7 +19,7 @@ class SetData(BaseModel):
 
     @field_validator('specimens')
     @classmethod
-    def validate_specimens_count(cls, v: List[Any], info) -> List[Any]:
+    def validate_specimen_count(cls, v: List[Any], info) -> List[Any]:
         """Validate that specimens count matches input_data.set_size"""
 
         # Get input_data from the model being validated:
@@ -35,13 +35,17 @@ class SetData(BaseModel):
         return v
 
 
-    def add_specimen(self, specimen: Any) -> None:
+    def add_specimen(self, ctx: Any, specimen: Any) -> None:
         """Add a specimen to the set"""
 
+        if specimen is None:
+            raise ctx.errors.ValidationError("Cannot add None specimen to set")
+
         if len(self.specimens) >= self.input_data.set_size:
-            raise ValueError(f"Cannot add more specimens: set is full ({self.input_data.set_size} maximum)")
+            raise ctx.errors.ValidationError(f"Cannot add more specimens: set is full ({self.input_data.set_size} maximum)")
 
         self.specimens.append(specimen)
+        ctx.logger.info(f"Added specimen to set. Count: {len(self.specimens)}/{self.input_data.set_size}")
 
 
     def is_complete(self) -> bool:

@@ -1,69 +1,46 @@
-# Application Configuration for Malg-ACTA
+# pplication Configuration:
 
-# Logging configuration
+# Logging configuration:
 logging:
-  path: "logs/malg_acta.log"
-  console_enabled: true
+  path: "logs/default.log"  # Log file path (relative to project root)
+  console_enabled: false    # Enable console output alongside file logging
 
-# File paths
-data_paths:
-  demo_data: "data/demo_data.json"
-  clients_file: "data/clients.json"
-  concrete_classes_file: "data/concrete_classes.json"
-  registry_file: "data/registry.json"
-  input_exchange: "data/input_from_java.json"
-  output_exchange: "data/output_to_java.json"
+input:
+  method: "gui"   # Input method, currently "gui" or "cli"
+  retry_count: 3  # Number of retry attempts for GUI/CLI initialization failures
 
-# Output paths
-output_paths:
-  reports_dir: "data/reports"
-  excel_dir: "data/reports/excel"
-  pdf_dir: "data/reports/pdf"
+# Data storage configuration:
+data_storage:
+  data_dir: "data"                                     # Main data directory
+  receipts_dir: "data/receipts"                        # Generated receipts directory
+  clients_path: "data/clients.json"                    # Persistent clients list
+  concrete_classes_path: "data/concrete_classes.json"  # Persistent concrete classes list
+  registry_path: "data/registry.json"                  # Testing registry/history
 
-# Protocol settings
-protocols:
-  cube_compression_testing:
-    requires_scale: true
-    requires_press: true
-    specimen_dimensions:
-      x: 150  # mm
-      y: 150  # mm  
-      z: 150  # mm
-    compression_area: 22500  # mm²
-  
-  cube_frost_testing:
-    requires_scale: true
-    requires_press: true
-    specimen_dimensions:
-      x: 150  # mm
-      y: 150  # mm
-      z: 150  # mm
-    compression_area: 22500  # mm²
-  
-  beam_compression_testing:
-    requires_scale: false
-    requires_press: true
-    specimen_dimensions:
-      length: 400  # mm
-      width: 100   # mm
-      height: 100  # mm
-  
-  beam_flexural_testing:
-    requires_scale: false
-    requires_press: true
-    specimen_dimensions:
-      length: 400  # mm
-      width: 100   # mm
-      height: 100  # mm
+# Device configuration:
+devices:
+  # Scale configuration:
+  scale:
+    port: "/dev/ttyACM1"  # Serial port for scale
+    baudrate: 9600        # Baud rate for scale communication
+    bytesize: 8           # Data bits
+    parity: "none"        # Parity setting
+    stopbits: 1           # Stop bits
+    xonxoff: true         # Software flow control
+    timeout: 1.0          # Read timeout in seconds
+    retry_count: 3        # Number of retry attempts for failed reads
 
-# Java integration
-java_integration:
-  gui_jar_path: "gui-app/target/gui-app-1.0.jar"
-  cli_class: "com.malg_acta.gui_app.InputCLI"
-  gui_class: "com.malg_acta.gui_app.InputGUI"
-  excel_class: "CubeCompression"
-  
-# Output generation
-output_generation:
-  pdf_script: "scripts/create_pdf.py"
-  excel_script: "scripts/CubeCompression.java"
+  # Press configuration:
+  press:
+    port: "/dev/ttyACM0"  # Serial port for press
+    baudrate: 38400       # Baud rate for press communication
+    bytesize: 8           # Data bits
+    parity: "none"        # Parity setting
+    stopbits: 1           # Stop bits
+    xonxoff: true         # Software flow control
+    timeout: 1.0          # Read timeout in seconds
+    retry_count: 3        # Number of retry attempts for failed reads
+
+# Plugin system configuration:
+plugins:
+  config_path: "configs/plugin_modules.yaml"  # Plugin modules configuration file
